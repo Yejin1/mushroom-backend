@@ -46,4 +46,7 @@ public class ApprovalDoc {
 
     @Column(name = "URGENT_YN", length = 1)
     private String urgentYn = "N";
+
+    @OneToOne(mappedBy = "doc", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private ApprovalDocBody body;
 }

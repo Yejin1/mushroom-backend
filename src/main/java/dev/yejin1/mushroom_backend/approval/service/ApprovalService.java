@@ -1,23 +1,44 @@
 package dev.yejin1.mushroom_backend.approval.service;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.yejin1.mushroom_backend.approval.dto.ApprovalDocRequestDto;
+import dev.yejin1.mushroom_backend.approval.dto.ApprovalDocResponseDto;
 import dev.yejin1.mushroom_backend.approval.entity.ApprovalDoc;
+import dev.yejin1.mushroom_backend.approval.entity.ApprovalDocBody;
+import dev.yejin1.mushroom_backend.approval.repository.ApprovalDocBodyRepository;
 import dev.yejin1.mushroom_backend.approval.repository.ApprovalDocRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ApprovalService {
 
     private final ApprovalDocRepository approvalDocRepository;
+    private final ApprovalDocBodyRepository approvalDocBodyRepository;
 
-
-    public List<ApprovalDoc> getAllDocs() {
-        return approvalDocRepository.findAll();
+    public List<ApprovalDocResponseDto> getAllDocs() {
+        return approvalDocRepository.findAll().stream()
+                .map(doc -> ApprovalDocResponseDto.builder()
+                        .id(doc.getId())
+                        .docNo(doc.getDocNo())
+                        .formId(doc.getFormId())
+                        .title(doc.getTitle())
+                        .writer(doc.getWriter())
+                        .statusCd(doc.getStatusCd())
+                        .statusNm(doc.getStatusNm())
+                        .currentUsr(doc.getCurrentUsr())
+                        .createDt(doc.getCreateDt())
+                        .completedDt(doc.getCompletedDt())
+                        .urgentYn(doc.getUrgentYn())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     public Optional<ApprovalDoc> getDocById(Long id) {
@@ -30,6 +51,28 @@ public class ApprovalService {
 
     public List<ApprovalDoc> getDocsByStatusCd(Integer statusCd) {
         return approvalDocRepository.findByStatusCd(statusCd);
+    }
+
+    public Long createApproval(ApprovalDocRequestDto dto) {
+        ApprovalDoc doc = new ApprovalDoc();
+        doc.setFormId(dto.getFormId());
+        doc.setTitle(dto.getTitle());
+        doc.setWriter(dto.getWriter());
+        doc.setUrgentYn(dto.getUrgentYn());
+        doc.setStatusCd(0);
+        doc.setStatusNm("작성중");
+        doc.setCreateDt(LocalDateTime.now());
+
+        ApprovalDocBody body = new ApprovalDocBody();
+        body.setFormContent(new ObjectMapper().valueToTree(dto.getFormContent()).toString());
+        body.setLastEditedBy(dto.getWriter());
+        body.setLastEditedDt(LocalDateTime.now());
+
+        doc.setBody(body);
+        body.setDoc(doc);
+
+        approvalDocRepository.save(doc);
+        return doc.getId();
     }
 
 }
