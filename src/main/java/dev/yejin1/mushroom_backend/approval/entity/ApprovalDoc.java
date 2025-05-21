@@ -1,15 +1,14 @@
 package dev.yejin1.mushroom_backend.approval.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "approval_doc")
 @Data
-@NoArgsConstructor
 public class ApprovalDoc {
 
     @Id
@@ -23,11 +22,17 @@ public class ApprovalDoc {
     @Column(name = "FORM_ID")
     private Long formId;
 
+    @Column(name = "FORM_NM", length = 100)
+    private String formNm;
+
     @Column(name = "TITLE", nullable = false, length = 200)
     private String title;
 
     @Column(name = "WRITER", nullable = false)
     private Long writer;
+
+    @Column(name = "WRITER_NM", length = 50)
+    private String writerNm;
 
     @Column(name = "CREATE_DT", nullable = false)
     private LocalDateTime createDt;
@@ -47,6 +52,4 @@ public class ApprovalDoc {
     @Column(name = "URGENT_YN", length = 1)
     private String urgentYn = "N";
 
-    @OneToOne(mappedBy = "doc", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private ApprovalDocBody body;
 }

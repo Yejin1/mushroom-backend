@@ -1,0 +1,7 @@
+package dev.yejin1.mushroom_backend.org.repository;
+
+import dev.yejin1.mushroom_backend.org.entity.OrgUsr;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface OrgUsrRepository  extends JpaRepository<OrgUsr, Long> {
+}

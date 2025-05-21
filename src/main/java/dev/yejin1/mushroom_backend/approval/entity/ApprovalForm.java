@@ -19,6 +19,9 @@ public class ApprovalForm {
     @Column(name = "NAME", nullable = false, length = 100)
     private String name;  // 예: "휴가 신청서"
 
+    @Column(name = "SHORT_NAME", nullable = false, length = 30)
+    private String shortName;  // 문서번호에 사용될 약명
+
     @Column(name = "CODE", nullable = false, unique = true, length = 50)
     private String code;  // 예: "VACATION", "EXPENSE", "BUSINESS_TRIP"
 
@@ -29,7 +32,7 @@ public class ApprovalForm {
     private String formSchema;  // 프론트가 렌더링할 JSON 구조
 
     @Column(name = "ACTIVE_YN", length = 1)
-    private String activeYn = "Y";  // Y/N로 사용 여부 표시
+    private String activeYn = "Y";  // 사용 여부
 
     @Column(name = "CREATE_DT")
     private LocalDateTime createDt;

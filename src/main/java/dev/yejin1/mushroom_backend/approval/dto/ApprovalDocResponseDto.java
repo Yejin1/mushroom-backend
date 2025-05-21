@@ -12,8 +12,10 @@ public class ApprovalDocResponseDto {
     private Long id;
     private String docNo;
     private Long formId;
+    private String formNm;
     private String title;
     private Long writer;
+    private String writerNm;
     private Integer statusCd;
     private String statusNm;
     private Long currentUsr;
