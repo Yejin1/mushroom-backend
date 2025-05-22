@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface OrgUsrRepository  extends JpaRepository<OrgUsr, Long> {
 
     Optional<OrgUsr> findByLoginId(String loginId);
+
+
 }
