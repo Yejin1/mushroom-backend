@@ -50,6 +50,10 @@ public class ApprovalService {
                 .collect(Collectors.toList());
     }
 
+    public List<ApprovalDocResponseDto> getDocList(Long usrId, Integer StatusCd) {
+        return approvalDocRepository.findApprovalDocsByConditions(usrId, StatusCd);
+    }
+
     public Optional<ApprovalDoc> getDocById(Long id) {
         return approvalDocRepository.findById(id);
     }

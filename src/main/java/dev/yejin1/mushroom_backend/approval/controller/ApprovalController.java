@@ -26,6 +26,12 @@ public class ApprovalController {
         return ResponseEntity.ok(approvalService.getAllDocs());
     }
 
+    @GetMapping("/list")
+    public List<ApprovalDocResponseDto> getDocList(@RequestParam Long usrId, @RequestParam Integer statusCd) {
+        //******아이디 정보는 나중에 로그인 방식으로 변경해야함***
+        return approvalService.getDocList(usrId, statusCd);
+    }
+
     @PostMapping
     public ResponseEntity<Long> createApproval(@RequestBody ApprovalDocRequestDto dto) {
         Long id = approvalService.createApproval(dto);
