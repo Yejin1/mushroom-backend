@@ -9,6 +9,8 @@ import dev.yejin1.mushroom_backend.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,12 +19,20 @@ public class AuthService {
 
     private final OrgUsrRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final PasswordEncoder passwordEncoder;
 
     public LoginResponse login(LoginRequest request) {
         OrgUsr user = userRepository.findByLoginId(request.getLoginId())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        if (!user.getPwd().equals(request.getPassword())) {
+        System.out.println("입력된 아이디 : " + request.getLoginId());
+        System.out.println("입력된 비번 : " + request.getPassword());
+
+        System.out.println("DB 아이디 : " + user.getLoginId());
+        System.out.println("DB 비번 : " + user.getPwd());
+        System.out.println(passwordEncoder.encode("1234"));
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPwd())) {
             throw new BadCredentialsException("Invalid password");
         }
 
