@@ -12,7 +12,10 @@ import dev.yejin1.mushroom_backend.approval.repository.ApprovalDocRepository;
 import dev.yejin1.mushroom_backend.approval.repository.ApprovalFormRepository;
 import dev.yejin1.mushroom_backend.org.entity.OrgUsr;
 import dev.yejin1.mushroom_backend.org.repository.OrgUsrRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -51,8 +54,8 @@ public class ApprovalService {
                 .collect(Collectors.toList());
     }
 
-    public List<ApprovalDocResponseDto> getDocList(Long usrId, Integer StatusCd) {
-        return approvalDocRepository.findApprovalDocsByConditions(usrId, StatusCd);
+    public Page<ApprovalDocResponseDto> getDocList(Long usrId, Integer StatusCd, Pageable pageable) {
+        return approvalDocRepository.findApprovalDocsByConditions(usrId, StatusCd, pageable);
     }
 
     public Optional<ApprovalDoc> getDocById(Long id) {
@@ -67,6 +70,7 @@ public class ApprovalService {
         return approvalDocRepository.findByStatusCd(statusCd);
     }
 
+    @Transactional
     public Long createApproval(ApprovalDocRequestDto dto) {
         ApprovalDoc doc = new ApprovalDoc();
         doc.setFormId(dto.getFormId());
@@ -82,15 +86,15 @@ public class ApprovalService {
         ApprovalForm form = approvalFormRepository.findById(dto.getFormId())
                 .orElseThrow(() -> new RuntimeException("양식 없음"));
 
+        ApprovalDoc savedDoc = approvalDocRepository.save(doc);
 
         ApprovalDocBody body = new ApprovalDocBody();
         body.setFormContent(new ObjectMapper().valueToTree(dto.getFormContent()).toString());
         body.setLastEditedBy(dto.getWriter());
         body.setLastEditedDt(LocalDateTime.now());
 
-        body.setDoc(doc);
+        body.setDoc(savedDoc);
 
-        approvalDocRepository.save(doc);
         approvalDocBodyRepository.save(body);
         return doc.getId();
     }

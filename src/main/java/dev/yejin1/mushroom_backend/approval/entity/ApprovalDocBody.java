@@ -3,7 +3,6 @@ package dev.yejin1.mushroom_backend.approval.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity

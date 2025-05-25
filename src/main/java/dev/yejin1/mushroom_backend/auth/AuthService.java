@@ -25,18 +25,12 @@ public class AuthService {
         OrgUsr user = userRepository.findByLoginId(request.getLoginId())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        System.out.println("입력된 아이디 : " + request.getLoginId());
-        System.out.println("입력된 비번 : " + request.getPassword());
-
-        System.out.println("DB 아이디 : " + user.getLoginId());
-        System.out.println("DB 비번 : " + user.getPwd());
-        System.out.println(passwordEncoder.encode("1234"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPwd())) {
             throw new BadCredentialsException("Invalid password");
         }
 
-        String token = jwtTokenProvider.generateToken(user.getLoginId());
+        String token = jwtTokenProvider.generateToken(user.getUsrId(),user.getLoginId());
 
         return LoginResponse.builder()
                 .loginId(user.getLoginId())

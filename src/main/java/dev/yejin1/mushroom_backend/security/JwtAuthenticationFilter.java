@@ -1,5 +1,6 @@
 package dev.yejin1.mushroom_backend.security;
 
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,10 +27,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (token != null && jwtTokenProvider.validateToken(token)) {
             String username = jwtTokenProvider.getUsername(token);
-            Authentication auth = new UsernamePasswordAuthenticationToken(username, null, List.of());
+            Long usrId = Long.valueOf(jwtTokenProvider.getClaim(token, "usrId").toString());
+            Authentication auth = new UsernamePasswordAuthenticationToken(
+                    new CustomUserPrincipal(username,usrId), null, List.of());
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
-
         filterChain.doFilter(request, response);
     }
 
