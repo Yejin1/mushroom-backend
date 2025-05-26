@@ -29,16 +29,16 @@ public class OrgUsr {
     @Column(name = "USR_ID")
     private Long usrId;
 
-    @Column(name = "LOGIN_ID", nullable = false, unique = true, length = 45)
+    @Column(name = "LOGIN_ID", unique = true, length = 45)
     private String loginId;
 
-    @Column(name = "USR_NM", nullable = false, unique = true, length = 45)
+    @Column(name = "USR_NM", nullable = false, length = 45)
     private String usrNm;
 
-    @Column(name = "PWD", nullable = false, length = 200)
+    @Column(name = "PWD", length = 200)
     private String pwd;
 
-    @Column(name = "PWD_DATE", nullable = false, length = 8)
+    @Column(name = "PWD_DATE",  length = 8)
     private String pwdDate;
 
     @Column(name = "LOCK_YN", length = 1)
@@ -70,7 +70,7 @@ public class OrgUsr {
     @Column(name = "PROFILE_PHOTO")
     private byte[] profilePhoto;
 
-    @Column(name = "JOIN_DATE", nullable = false, length = 8)
+    @Column(name = "JOIN_DATE", length = 8)
     private String joinDate;
 
     @Column(name = "CREATE_DT", nullable = false)
