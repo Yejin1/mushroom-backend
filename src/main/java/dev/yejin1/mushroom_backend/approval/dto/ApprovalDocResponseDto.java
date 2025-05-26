@@ -1,4 +1,16 @@
+/**
+ * ApprovalDocResponseDto
+ *
+ * 전자결재 문서 목록 조회용 Dto
+ *
+ * <p>
+ * </p>
+ *
+ * @author Yejin1
+ * @since 2025-05-17
+ */
 package dev.yejin1.mushroom_backend.approval.dto;
+
 
 
 import lombok.AllArgsConstructor;

@@ -1,3 +1,15 @@
+/**
+ * ApprovalController
+ *
+ * 로그인 컨트롤러
+ *
+ * <p>
+ *     로그인
+ * </p>
+ *
+ * @author Yejin1
+ * @since 2025-05-23
+ */
 package dev.yejin1.mushroom_backend.auth.controller;
 
 import dev.yejin1.mushroom_backend.auth.AuthService;

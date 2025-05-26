@@ -1,3 +1,16 @@
+/**
+ * ApprovalService
+ *
+ * 전자결재 문서 서비스
+ *
+ * <p>
+ *     문서목록 조회
+ *     문서작성
+ * </p>
+ *
+ * @author Yejin1
+ * @since 2025-05-17
+ */
 package dev.yejin1.mushroom_backend.approval.service;
 
 
@@ -16,7 +29,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -97,6 +110,10 @@ public class ApprovalService {
 
         approvalDocBodyRepository.save(body);
         return doc.getId();
+    }
+
+    public Optional<ApprovalDocBody> getDocBody(Long docId) {
+        return approvalDocBodyRepository.findById(docId);
     }
 
 }

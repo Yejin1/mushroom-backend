@@ -1,7 +1,6 @@
 package dev.yejin1.mushroom_backend.security;
 
 import io.jsonwebtoken.*;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

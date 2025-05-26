@@ -1,3 +1,16 @@
+/**
+ * ApprovalDoc
+ *
+ * 전자결재 문서정보 테이블 Entity
+ *
+ * <p>
+ *     전자결재 문서 기본 정보
+ *     목록 조회 시 사용
+ * </p>
+ *
+ * @author Yejin1
+ * @since 2025-05-17
+ */
 package dev.yejin1.mushroom_backend.approval.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;

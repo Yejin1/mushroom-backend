@@ -1,3 +1,14 @@
+/**
+ * OrgUsr
+ *
+ * 사용자 정보 테이블 Entity
+ *
+ * <p>
+ * </p>
+ *
+ * @author Yejin1
+ * @since 2025-05-17
+ */
 package dev.yejin1.mushroom_backend.org.entity;
 
 

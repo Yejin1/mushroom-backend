@@ -1,3 +1,15 @@
+/**
+ * ApprovalDocBody
+ *
+ * 전자결재 문서 내용 테이블 Entity
+ *
+ * <p>
+ *     전자결재 내용테이블
+ * </p>
+ *
+ * @author Yejin1
+ * @since 2025-05-17
+ */
 package dev.yejin1.mushroom_backend.approval.entity;
 
 

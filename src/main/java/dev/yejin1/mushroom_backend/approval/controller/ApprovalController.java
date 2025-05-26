@@ -1,8 +1,22 @@
+/**
+ * ApprovalController
+ *
+ * 전자결재 문서 컨트롤러
+ *
+ * <p>
+ *     문서목록 조회
+ *     문서작성
+ * </p>
+ *
+ * @author Yejin1
+ * @since 2025-05-17
+ */
 package dev.yejin1.mushroom_backend.approval.controller;
 
 import dev.yejin1.mushroom_backend.approval.dto.ApprovalDocRequestDto;
 import dev.yejin1.mushroom_backend.approval.dto.ApprovalDocResponseDto;
 import dev.yejin1.mushroom_backend.approval.entity.ApprovalDoc;
+import dev.yejin1.mushroom_backend.approval.entity.ApprovalDocBody;
 import dev.yejin1.mushroom_backend.approval.service.ApprovalService;
 import dev.yejin1.mushroom_backend.security.CustomUserPrincipal;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +33,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,17 +50,24 @@ public class ApprovalController {
 
     @GetMapping("/list")
     public Page<ApprovalDocResponseDto> getDocList(@RequestParam Integer statusCd, @PageableDefault(size = 10, sort = "createDt", direction = Sort.Direction.DESC) Pageable pageable) {
+        //사용자 ID 정보 세팅
         CustomUserPrincipal principal = (CustomUserPrincipal)
                 SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
         Long usrId = principal.getUsrId();
-        System.out.println("usrId = " + usrId);
+
+
         return approvalService.getDocList(usrId, statusCd, pageable);
     }
 
+    @GetMapping("/read")
+    public Optional<ApprovalDocBody> getDocBody(@RequestParam Long docId) {
+        return approvalService.getDocBody(docId);
+    }
+
+
     @PostMapping
     public ResponseEntity<Long> createApproval(@RequestBody ApprovalDocRequestDto dto) {
-        
+
         //로그인 정보
         CustomUserPrincipal principal = (CustomUserPrincipal)
                 SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -53,7 +75,7 @@ public class ApprovalController {
         //작성자 세팅
         Long usrId = principal.getUsrId();
         dto.setWriter(usrId);
-        
+
         Long id = approvalService.createApproval(dto);
         return ResponseEntity.ok(id);
     }
