@@ -36,6 +36,9 @@ public class ApprovalForm {
     @Column(name = "CODE", nullable = false, unique = true, length = 50)
     private String code;  // 예: "VACATION", "EXPENSE", "BUSINESS_TRIP"
 
+    @Column(name = "REACT_NAME", nullable = false, unique = true, length = 50)
+    private String reactName;  // 리액트 파일명
+
     @Column(name = "DESCRIPTION", length = 500)
     private String description;  // 양식 설명
 
@@ -44,6 +47,9 @@ public class ApprovalForm {
 
     @Column(name = "ACTIVE_YN", length = 1)
     private String activeYn = "Y";  // 사용 여부
+
+    @Column(name = "DISPLAY_ORDER")
+    private Long displayOrder;  // 정렬 순서
 
     @Column(name = "CREATE_DT")
     private LocalDateTime createDt;

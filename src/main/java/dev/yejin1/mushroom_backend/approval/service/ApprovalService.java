@@ -83,6 +83,10 @@ public class ApprovalService {
         return approvalDocRepository.findByStatusCd(statusCd);
     }
 
+    public List<ApprovalForm> getActiveFormList() {
+        return approvalFormRepository.findByActiveYn("Y");
+    }
+
     @Transactional
     public Long createApproval(ApprovalDocRequestDto dto) {
         ApprovalDoc doc = new ApprovalDoc();

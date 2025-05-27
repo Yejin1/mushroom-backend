@@ -17,6 +17,7 @@ import dev.yejin1.mushroom_backend.approval.dto.ApprovalDocRequestDto;
 import dev.yejin1.mushroom_backend.approval.dto.ApprovalDocResponseDto;
 import dev.yejin1.mushroom_backend.approval.entity.ApprovalDoc;
 import dev.yejin1.mushroom_backend.approval.entity.ApprovalDocBody;
+import dev.yejin1.mushroom_backend.approval.entity.ApprovalForm;
 import dev.yejin1.mushroom_backend.approval.service.ApprovalService;
 import dev.yejin1.mushroom_backend.security.CustomUserPrincipal;
 import lombok.RequiredArgsConstructor;
@@ -57,6 +58,11 @@ public class ApprovalController {
 
 
         return approvalService.getDocList(usrId, statusCd, pageable);
+    }
+
+    @GetMapping("/formList")
+    public List<ApprovalForm> getFormList() {
+        return approvalService.getActiveFormList();
     }
 
     @GetMapping("/read")
