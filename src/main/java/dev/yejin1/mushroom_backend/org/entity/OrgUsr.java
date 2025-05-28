@@ -50,6 +50,9 @@ public class OrgUsr {
     @Column(name = "EMP_NO", length = 20)
     private String empNo;
 
+    @Column(name = "BIRTH_DATE", length = 8)
+    private String birthDate;
+
     @Column(name = "EMAIL", length = 100)
     private String email;
 
