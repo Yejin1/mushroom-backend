@@ -16,12 +16,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
+
 public interface OrgUsrRepository  extends JpaRepository<OrgUsr, Long> {
 
     Optional<OrgUsr> findByLoginId(String loginId);
 
     Optional<OrgUsr> findByUsrNmAndEmpNo(String usrNm, String empNo);
-
-
 
 }

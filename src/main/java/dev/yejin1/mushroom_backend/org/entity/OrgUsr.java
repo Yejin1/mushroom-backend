@@ -47,7 +47,7 @@ public class OrgUsr {
     @Column(name = "STATUS", length = 1)
     private String status;
 
-    @Column(name = "EMP_NO", length = 20)
+    @Column(name = "EMP_NO", unique = true, length = 20)
     private String empNo;
 
     @Column(name = "BIRTH_DATE", length = 8)
