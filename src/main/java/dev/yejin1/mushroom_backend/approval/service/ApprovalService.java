@@ -87,6 +87,10 @@ public class ApprovalService {
         return approvalFormRepository.findByActiveYn("Y");
     }
 
+    public Optional<ApprovalForm> getFormInfo(Long formId) {
+        return approvalFormRepository.findById(formId);
+    }
+
     @Transactional
     public Long createApproval(ApprovalDocRequestDto dto) {
         ApprovalDoc doc = new ApprovalDoc();
@@ -103,10 +107,21 @@ public class ApprovalService {
         ApprovalForm form = approvalFormRepository.findById(dto.getFormId())
                 .orElseThrow(() -> new RuntimeException("양식 없음"));
 
+        doc.setWriterNm(writer.getUsrNm());
+        doc.setFormNm(form.getName());
         ApprovalDoc savedDoc = approvalDocRepository.save(doc);
 
         ApprovalDocBody body = new ApprovalDocBody();
-        body.setFormContent(new ObjectMapper().valueToTree(dto.getFormContent()).toString());
+
+        if(dto.getEditorYn() != null){
+            if(dto.getEditorYn().equals("Y")){
+                body.setEditorContent(dto.getEditorContent());
+                body.setEditorYn("Y");
+            }
+        }else{
+            body.setFormContent(new ObjectMapper().valueToTree(dto.getFormContent()).toString());
+            body.setEditorYn("N");
+        }
         body.setLastEditedBy(dto.getWriter());
         body.setLastEditedDt(LocalDateTime.now());
 

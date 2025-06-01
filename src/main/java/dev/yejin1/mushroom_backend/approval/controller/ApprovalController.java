@@ -65,6 +65,11 @@ public class ApprovalController {
         return approvalService.getActiveFormList();
     }
 
+    @GetMapping("/formInfo")
+    public Optional<ApprovalForm> getFormInfo(@RequestParam Long formId) {
+        return approvalService.getFormInfo(formId);
+    }
+
     @GetMapping("/read")
     public Optional<ApprovalDocBody> getDocBody(@RequestParam Long docId) {
         return approvalService.getDocBody(docId);

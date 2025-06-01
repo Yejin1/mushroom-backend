@@ -33,6 +33,13 @@ public class ApprovalDocBody {
     @Column(name = "FORM_CONTENT", columnDefinition = "json")
     private String formContent;
 
+    @Lob
+    @Column(name = "EDITOR_CONTENT", columnDefinition = "TEXT")
+    private String editorContent;
+
+    @Column(name = "EDITOR_YN", length = 1)
+    private String editorYn;
+
     @Column(name = "LAST_EDITED_BY")
     private Long lastEditedBy;
 

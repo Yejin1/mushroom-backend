@@ -23,5 +23,7 @@ public class ApprovalDocRequestDto {
     private String title;
     private Long writer;
     private String urgentYn;
+    private String editorYn;
     private Map<String, Object> formContent;
+    private String editorContent;
 }
