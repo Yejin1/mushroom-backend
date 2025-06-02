@@ -13,6 +13,11 @@ build/
 .settings
 .springBeans
 .sts4-cache
+application.properties
+application.yml
+*.pem
+*.key
+*.crt
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
