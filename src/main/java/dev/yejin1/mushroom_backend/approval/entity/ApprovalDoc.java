@@ -47,8 +47,8 @@ public class ApprovalDoc {
     @Column(name = "WRITER_NM", length = 50)
     private String writerNm;
 
-    @Column(name = "CREATE_DT", nullable = false)
-    private LocalDateTime createDt;
+    @Column(name = "CREATED_DT", nullable = false)
+    private LocalDateTime createdDt;
 
     @Column(name = "COMPLETED_DT")
     private LocalDateTime completedDt;

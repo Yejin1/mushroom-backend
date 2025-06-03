@@ -42,7 +42,7 @@ public interface ApprovalDocRepository  extends JpaRepository<ApprovalDoc, Long>
             statusCd,
             statusNm,
             currentUsr,
-            createDt,
+            createdDt,
             completedDt,
             urgentYn
             )

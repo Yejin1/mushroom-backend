@@ -56,13 +56,13 @@ public class BoardPost {
     private String createdBy;
 
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    private LocalDateTime createdDt;
 
     @Column(length = 50)
     private String updatedBy;
 
     @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    private LocalDateTime updatedDt;
 
     @OneToOne(mappedBy = "boardPost", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private BoardPostBody body;

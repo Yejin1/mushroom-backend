@@ -34,17 +34,17 @@ public class OrgPos {
     @Column(name = "POS_DESC", length = 200)
     private String posDesc;
 
-    @Column(name = "CREATE_DT", nullable = false)
-    private LocalDateTime createDt;
+    @Column(name = "CREATED_DT", nullable = false)
+    private LocalDateTime createdDt;
 
-    @Column(name = "CREATE_ID", nullable = false, length = 45)
-    private String createId;
+    @Column(name = "CREATED_ID", nullable = false, length = 45)
+    private String createdId;
 
-    @Column(name = "UPDATE_DT", nullable = false)
-    private LocalDateTime updateDt;
+    @Column(name = "UPDATED_DT", nullable = false)
+    private LocalDateTime updatedDt;
 
-    @Column(name = "UPDATE_ID", nullable = false, length = 45)
-    private String updateId;
+    @Column(name = "UPDATED_ID", nullable = false, length = 45)
+    private String updatedId;
 
     @OneToMany(mappedBy = "pos")
     private List<OrgUsr> users;

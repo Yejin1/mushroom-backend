@@ -35,7 +35,7 @@ public class ApprovalDocResponseDto {
     private Integer statusCd;
     private String statusNm;
     private Long currentUsr;
-    private LocalDateTime createDt;
+    private LocalDateTime createdDt;
     private LocalDateTime completedDt;
     private String urgentYn;
 }

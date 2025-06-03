@@ -46,6 +46,7 @@ public class ApprovalService {
     private final OrgUsrRepository orgUsrRepository;
     private final ApprovalFormRepository approvalFormRepository;
 
+    //문서 전체 목록 조회(미사용)
     public List<ApprovalDocResponseDto> getAllDocs() {
         return 
                 approvalDocRepository.findAll().stream()
@@ -60,37 +61,29 @@ public class ApprovalService {
                         .statusCd(doc.getStatusCd())
                         .statusNm(doc.getStatusNm())
                         .currentUsr(doc.getCurrentUsr())
-                        .createDt(doc.getCreateDt())
+                        .createdDt(doc.getCreatedDt())
                         .completedDt(doc.getCompletedDt())
                         .urgentYn(doc.getUrgentYn())
                         .build())
                 .collect(Collectors.toList());
     }
 
+    //문서 목록 조회
     public Page<ApprovalDocResponseDto> getDocList(Long usrId, Integer StatusCd, Pageable pageable) {
         return approvalDocRepository.findApprovalDocsByConditions(usrId, StatusCd, pageable);
     }
 
-    public Optional<ApprovalDoc> getDocById(Long id) {
-        return approvalDocRepository.findById(id);
-    }
-
-    public ApprovalDoc saveDoc(ApprovalDoc doc) {
-        return approvalDocRepository.save(doc);
-    }
-
-    public List<ApprovalDoc> getDocsByStatusCd(Integer statusCd) {
-        return approvalDocRepository.findByStatusCd(statusCd);
-    }
-
+    //결재 양식 목록
     public List<ApprovalForm> getActiveFormList() {
         return approvalFormRepository.findByActiveYn("Y");
     }
 
+    //결재 양식 정보
     public Optional<ApprovalForm> getFormInfo(Long formId) {
         return approvalFormRepository.findById(formId);
     }
 
+    //문서 작성
     @Transactional
     public Long createApproval(ApprovalDocRequestDto dto) {
         ApprovalDoc doc = new ApprovalDoc();
@@ -100,7 +93,7 @@ public class ApprovalService {
         doc.setUrgentYn(dto.getUrgentYn());
         doc.setStatusCd(0);
         doc.setStatusNm("작성중");
-        doc.setCreateDt(LocalDateTime.now());
+        doc.setCreatedDt(LocalDateTime.now());
 
         OrgUsr writer = orgUsrRepository.findById(dto.getWriter())
                 .orElseThrow(() -> new RuntimeException("작성자 없음"));

@@ -71,13 +71,13 @@ public class BoardPostComment {
     private String createdBy;
 
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    private LocalDateTime createdDt;
 
     @Column(length = 50)
     private String updatedBy;
 
     @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    private LocalDateTime updatedDt;
 
     @Builder.Default
     @Column(nullable = false)

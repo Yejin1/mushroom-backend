@@ -66,8 +66,8 @@ public class JoinService {
         user.get().setJoinDate(today);
         user.get().setLoginId(loginId);
         user.get().setPwd(password);
-        user.get().setUpdateId(loginId);
-        user.get().setUpdateDt(LocalDateTime.now());
+        user.get().setUpdatedId(loginId);
+        user.get().setUpdatedDt(LocalDateTime.now());
 
 
         response.setLoginId(loginId);

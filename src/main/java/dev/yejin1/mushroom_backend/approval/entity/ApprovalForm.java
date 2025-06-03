@@ -51,9 +51,9 @@ public class ApprovalForm {
     @Column(name = "DISPLAY_ORDER")
     private Long displayOrder;  // 정렬 순서
 
-    @Column(name = "CREATE_DT")
-    private LocalDateTime createDt;
+    @Column(name = "CREATED_DT")
+    private LocalDateTime createdDt;
 
-    @Column(name = "UPDATE_DT")
-    private LocalDateTime updateDt;
+    @Column(name = "UPDATED_DT")
+    private LocalDateTime updatedDt;
 }

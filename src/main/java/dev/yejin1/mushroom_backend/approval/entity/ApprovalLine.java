@@ -56,11 +56,11 @@ public class ApprovalLine {
     @Column(length = 500)
     private String comment;  // 결재 의견
 
-    private LocalDateTime approvedAt; // 실제 승인 시각
+    private LocalDateTime approvedDt; // 실제 승인 시각
 
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    private LocalDateTime createdDt;
 
     @UpdateTimestamp
-    private LocalDateTime statusUpdatedAt;
+    private LocalDateTime statusUpdatedDt;
 }

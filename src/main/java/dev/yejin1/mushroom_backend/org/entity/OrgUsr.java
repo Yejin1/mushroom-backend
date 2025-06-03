@@ -76,15 +76,15 @@ public class OrgUsr {
     @Column(name = "JOIN_DATE", length = 8)
     private String joinDate;
 
-    @Column(name = "CREATE_DT", nullable = false)
-    private LocalDateTime createDt;
+    @Column(name = "CREATED_DT", nullable = false)
+    private LocalDateTime createdDt;
 
-    @Column(name = "CREATE_ID", nullable = false, length = 45)
-    private String createId;
+    @Column(name = "CREATED_ID", nullable = false, length = 45)
+    private String createdId;
 
-    @Column(name = "UPDATE_DT", nullable = false)
-    private LocalDateTime updateDt;
+    @Column(name = "UPDATED_DT", nullable = false)
+    private LocalDateTime updatedDt;
 
-    @Column(name = "UPDATE_ID", nullable = false, length = 45)
-    private String updateId;
+    @Column(name = "UPDATED_ID", nullable = false, length = 45)
+    private String updatedId;
 }
