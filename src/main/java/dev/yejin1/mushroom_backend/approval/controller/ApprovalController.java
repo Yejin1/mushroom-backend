@@ -60,16 +60,19 @@ public class ApprovalController {
         return approvalService.getDocList(usrId, statusCd, pageable);
     }
 
+    //결재 양식 조회
     @GetMapping("/formList")
     public List<ApprovalForm> getFormList() {
         return approvalService.getActiveFormList();
     }
 
+    //결재 양식 정보
     @GetMapping("/formInfo")
     public Optional<ApprovalForm> getFormInfo(@RequestParam Long formId) {
         return approvalService.getFormInfo(formId);
     }
 
+    //문서 내용 조회
     @GetMapping("/read")
     public Optional<ApprovalDocBody> getDocBody(@RequestParam Long docId) {
         return approvalService.getDocBody(docId);

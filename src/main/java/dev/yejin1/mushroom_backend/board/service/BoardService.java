@@ -14,11 +14,15 @@
  */
 package dev.yejin1.mushroom_backend.board.service;
 
+import dev.yejin1.mushroom_backend.approval.entity.ApprovalDocBody;
 import dev.yejin1.mushroom_backend.board.dto.BoardMenuDto;
+import dev.yejin1.mushroom_backend.board.dto.BoardPostBodyResponse;
 import dev.yejin1.mushroom_backend.board.dto.BoardPostListResponse;
 import dev.yejin1.mushroom_backend.board.entity.BoardMenu;
 import dev.yejin1.mushroom_backend.board.entity.BoardPost;
+import dev.yejin1.mushroom_backend.board.entity.BoardPostBody;
 import dev.yejin1.mushroom_backend.board.repository.BoardMenuRepository;
+import dev.yejin1.mushroom_backend.board.repository.BoardPostBodyRepository;
 import dev.yejin1.mushroom_backend.board.repository.BoardPostRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +40,7 @@ public class BoardService {
 
     private final BoardMenuRepository boardMenuRepository;
     private final BoardPostRepository boardPostRepository;
+    private final BoardPostBodyRepository boardPostBodyRepository;
 
     public List<BoardMenuDto> buildBoardMenuTree(List<BoardMenu> menuList) {
         // 1. 엔티티 → DTO 변환
@@ -85,11 +90,20 @@ public class BoardService {
         return buildBoardMenuTree(allMenus);
     }
 
+    //게시글 목록 조회
     public Page<BoardPostListResponse> getPostList(Pageable pageable) {
         Optional<BoardMenu> menu= boardMenuRepository.findById(4L); //파라미터로 변경 필요
         Page<BoardPostListResponse> posts = boardPostRepository.findBoardPostsByBoardMenu(menu.get(), pageable);
 
         return posts;
     }
+
+    public BoardPostBodyResponse getPostBody(Long postId) {
+        Optional<BoardPost> post = boardPostRepository.findById(postId);
+        Optional<BoardPostBody> body = boardPostBodyRepository.findByBoardPost(post.get());
+
+        return BoardPostBodyResponse.of(body.get());
+    }
+
 
 }

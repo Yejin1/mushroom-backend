@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "board_post")
+@Data
 @Getter
 @Setter
 @NoArgsConstructor

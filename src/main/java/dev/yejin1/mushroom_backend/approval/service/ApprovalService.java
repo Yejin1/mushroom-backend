@@ -124,6 +124,7 @@ public class ApprovalService {
         return doc.getId();
     }
 
+    //문서 내용 조회
     public Optional<ApprovalDocBody> getDocBody(Long docId) {
         return approvalDocBodyRepository.findById(docId);
     }

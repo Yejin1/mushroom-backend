@@ -21,11 +21,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "board_post_body")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Data
 public class BoardPostBody {
 
     @Id
@@ -37,7 +33,7 @@ public class BoardPostBody {
     private BoardPost boardPost;
 
     @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
     @Column(nullable = false, length = 50)
