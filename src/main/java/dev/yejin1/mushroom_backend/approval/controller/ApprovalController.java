@@ -49,16 +49,18 @@ public class ApprovalController {
         return ResponseEntity.ok(approvalService.getAllDocs());
     }
 
-    @GetMapping("/list") // 문서 목록 조회
-    public Page<ApprovalDocResponseDto> getDocList(@RequestParam Integer statusCd, @PageableDefault(size = 10, sort = "createdDt", direction = Sort.Direction.DESC) Pageable pageable) {
-        //사용자 ID 정보 세팅
+    @GetMapping("/list")
+    public Page<ApprovalDocResponseDto> getDocList(
+            @RequestParam String boxType, //결재함 종류
+            @PageableDefault(size = 10, sort = "createdDt", direction = Sort.Direction.DESC) Pageable pageable) {
+
         CustomUserPrincipal principal = (CustomUserPrincipal)
                 SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Long usrId = principal.getUsrId();
 
-
-        return approvalService.getDocList(usrId, statusCd, pageable);
+        return approvalService.getDocList(usrId, boxType, pageable);
     }
+
 
     //결재 양식 조회
     @GetMapping("/formList")

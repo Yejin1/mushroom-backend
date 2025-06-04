@@ -75,9 +75,19 @@ public class ApprovalService {
     }
 
     //문서 목록 조회
-    public Page<ApprovalDocResponseDto> getDocList(Long usrId, Integer StatusCd, Pageable pageable) {
-        return approvalDocRepository.findApprovalDocsByConditions(usrId, StatusCd, pageable);
+    public Page<ApprovalDocResponseDto> getDocList(Long usrId, String boxType, Pageable pageable) {
+        return switch (boxType) {
+            case "my-approval" -> approvalDocRepository.findMyApprovalBox(usrId, pageable);
+            case "my-in-progress" -> approvalDocRepository.findMyProcessingBox(usrId, pageable);
+            case "my-completed" -> approvalDocRepository.findMyCompletedBox(usrId, pageable);
+            case "my-rejected" -> approvalDocRepository.findMyRejectedBox(usrId, pageable);
+            case "my-referenced" -> approvalDocRepository.findMyReferenceBox(usrId, pageable);
+            case "dept-completed" -> approvalDocRepository.findDeptCompletedBox(usrId, pageable);
+            case "dept-referenced" -> approvalDocRepository.findDeptReferenceBox(usrId, pageable);
+            default -> Page.empty();
+        };
     }
+
 
     //결재 양식 목록
     public List<ApprovalForm> getActiveFormList() {
