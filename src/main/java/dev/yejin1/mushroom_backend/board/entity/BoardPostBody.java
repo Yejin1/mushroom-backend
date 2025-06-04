@@ -25,11 +25,11 @@ import java.time.LocalDateTime;
 public class BoardPostBody {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id", nullable = false, unique = true)
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "id")
     private BoardPost boardPost;
 
     @Lob

@@ -29,6 +29,10 @@ public class OrgUsr {
     @Column(name = "USR_ID")
     private Long usrId;
 
+    @ManyToOne
+    @JoinColumn(name = "DEPT_ID")
+    private OrgDept dept;  // 사용자 주 부서
+
     @Column(name = "LOGIN_ID", unique = true, length = 45)
     private String loginId;
 

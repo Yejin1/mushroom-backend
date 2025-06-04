@@ -101,8 +101,9 @@ public class BoardService {
     public BoardPostBodyResponse getPostBody(Long postId) {
         Optional<BoardPost> post = boardPostRepository.findById(postId);
         Optional<BoardPostBody> body = boardPostBodyRepository.findByBoardPost(post.get());
-
-        return BoardPostBodyResponse.of(body.get());
+        BoardPostBodyResponse response = BoardPostBodyResponse.of(body.get());
+        response.setTitle(post.get().getTitle());
+        return response;
     }
 
 

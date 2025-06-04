@@ -14,6 +14,7 @@ package dev.yejin1.mushroom_backend.approval.dto;
 import lombok.Data;
 import lombok.Getter;
 
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -26,4 +27,6 @@ public class ApprovalDocRequestDto {
     private String editorYn;
     private Map<String, Object> formContent;
     private String editorContent;
+    private List<ApprovalLineRequestDto> approvalLine;
+
 }

@@ -17,12 +17,16 @@ package dev.yejin1.mushroom_backend.approval.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.yejin1.mushroom_backend.approval.dto.ApprovalDocRequestDto;
 import dev.yejin1.mushroom_backend.approval.dto.ApprovalDocResponseDto;
+import dev.yejin1.mushroom_backend.approval.dto.ApprovalLineRequestDto;
+import dev.yejin1.mushroom_backend.approval.dto.ApprovalStatus;
 import dev.yejin1.mushroom_backend.approval.entity.ApprovalDoc;
 import dev.yejin1.mushroom_backend.approval.entity.ApprovalDocBody;
 import dev.yejin1.mushroom_backend.approval.entity.ApprovalForm;
+import dev.yejin1.mushroom_backend.approval.entity.ApprovalLine;
 import dev.yejin1.mushroom_backend.approval.repository.ApprovalDocBodyRepository;
 import dev.yejin1.mushroom_backend.approval.repository.ApprovalDocRepository;
 import dev.yejin1.mushroom_backend.approval.repository.ApprovalFormRepository;
+import dev.yejin1.mushroom_backend.approval.repository.ApprovalLineRepository;
 import dev.yejin1.mushroom_backend.org.entity.OrgUsr;
 import dev.yejin1.mushroom_backend.org.repository.OrgUsrRepository;
 import jakarta.transaction.Transactional;
@@ -45,6 +49,7 @@ public class ApprovalService {
     private final ApprovalDocBodyRepository approvalDocBodyRepository;
     private final OrgUsrRepository orgUsrRepository;
     private final ApprovalFormRepository approvalFormRepository;
+    private final ApprovalLineRepository approvalLineRepository;
 
     //문서 전체 목록 조회(미사용)
     public List<ApprovalDocResponseDto> getAllDocs() {
@@ -83,9 +88,9 @@ public class ApprovalService {
         return approvalFormRepository.findById(formId);
     }
 
-    //문서 작성
     @Transactional
     public Long createApproval(ApprovalDocRequestDto dto) {
+        // 1. 문서 저장
         ApprovalDoc doc = new ApprovalDoc();
         doc.setFormId(dto.getFormId());
         doc.setTitle(dto.getTitle());
@@ -104,24 +109,43 @@ public class ApprovalService {
         doc.setFormNm(form.getName());
         ApprovalDoc savedDoc = approvalDocRepository.save(doc);
 
+        // 2. 본문 저장
         ApprovalDocBody body = new ApprovalDocBody();
-
-        if(dto.getEditorYn() != null){
-            if(dto.getEditorYn().equals("Y")){
-                body.setEditorContent(dto.getEditorContent());
-                body.setEditorYn("Y");
-            }
-        }else{
+        if ("Y".equals(dto.getEditorYn())) {
+            body.setEditorContent(dto.getEditorContent());
+            body.setEditorYn("Y");
+        } else {
             body.setFormContent(new ObjectMapper().valueToTree(dto.getFormContent()).toString());
             body.setEditorYn("N");
         }
         body.setLastEditedBy(dto.getWriter());
         body.setLastEditedDt(LocalDateTime.now());
-
         body.setDoc(savedDoc);
-
         approvalDocBodyRepository.save(body);
-        return doc.getId();
+
+        // 3. 결재선 저장
+        List<ApprovalLineRequestDto> lineDtos = dto.getApprovalLine();
+        if (lineDtos != null && !lineDtos.isEmpty()) {
+            for (int i = 0; i < lineDtos.size(); i++) {
+                ApprovalLineRequestDto lineDto = lineDtos.get(i);
+
+                ApprovalLine line = ApprovalLine.builder()
+                        .approvalDoc(savedDoc)
+                        .approverId(lineDto.getUsrId())
+                        .approverName(lineDto.getUsrNm())
+                        .approverPosition(lineDto.getPosNm())
+                        .approverDepartment(lineDto.getDeptNm())
+                        .stepOrder(lineDto.getStepOrder())
+                        .status(i == 0 ? ApprovalStatus.WAITING : ApprovalStatus.WRITING) // 첫 사람만 대기, 나머진 순서대기
+                        .isFinalApprover(i == lineDtos.size() - 1)
+                        .isParallel(false) // 병렬은 지금 없음
+                        .build();
+
+                approvalLineRepository.save(line);
+            }
+        }
+
+        return savedDoc.getId();
     }
 
     //문서 내용 조회

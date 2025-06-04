@@ -2,6 +2,7 @@ package dev.yejin1.mushroom_backend.board.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -9,7 +10,7 @@ import java.time.LocalDateTime;
 @Builder
 public class BoardPostListResponse {
 
-    private Long postId;
+    private Long id;
     private String title;
     private String authorName;
     private LocalDateTime createdDt;

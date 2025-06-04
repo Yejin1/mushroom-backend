@@ -11,9 +11,12 @@
  */
 package dev.yejin1.mushroom_backend.org.repository;
 
+import dev.yejin1.mushroom_backend.org.dto.OrgUserSimpleDto;
 import dev.yejin1.mushroom_backend.org.entity.OrgUsr;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -22,5 +25,16 @@ public interface OrgUsrRepository  extends JpaRepository<OrgUsr, Long> {
     Optional<OrgUsr> findByLoginId(String loginId);
 
     Optional<OrgUsr> findByUsrNmAndEmpNo(String usrNm, String empNo);
+
+    @Query("""
+    SELECT new dev.yejin1.mushroom_backend.org.dto.OrgUserSimpleDto(
+        u.usrId, u.usrNm, u.empNo, p.posNm, d.deptNm, u.email
+    )
+    FROM OrgUsr u
+    LEFT JOIN u.pos p
+    LEFT JOIN u.dept d
+""")
+    List<OrgUserSimpleDto> findAllSimpleUsers();
+
 
 }
