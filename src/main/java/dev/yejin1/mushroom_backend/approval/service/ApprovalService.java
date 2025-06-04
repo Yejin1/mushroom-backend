@@ -37,6 +37,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -124,6 +125,24 @@ public class ApprovalService {
         approvalDocBodyRepository.save(body);
 
         // 3. 결재선 저장
+        List<ApprovalLine> approvalLines = new ArrayList<>();
+
+        // 3-1. 작성자 결재선 먼저 추가 (stepOrder 0)
+        ApprovalLine writerLine = ApprovalLine.builder()
+                .approvalDoc(savedDoc)
+                .approverId(writer.getUsrId())
+                .approverName(writer.getUsrNm())
+                .approverPosition(writer.getPos() != null ? writer.getPos().getPosNm() : null)
+                .approverDepartment(writer.getDept() != null ? writer.getDept().getDeptNm() : null)
+                .stepOrder(0)
+                .status(ApprovalStatus.CREATED)
+                .isFinalApprover(false)
+                .isParallel(false)
+                .build();
+
+        approvalLines.add(writerLine);
+
+        // 3-2. 프론트에서 넘겨준 결재자 결재선 추가 (stepOrder는 1부터 시작)
         List<ApprovalLineRequestDto> lineDtos = dto.getApprovalLine();
         if (lineDtos != null && !lineDtos.isEmpty()) {
             for (int i = 0; i < lineDtos.size(); i++) {
@@ -135,18 +154,21 @@ public class ApprovalService {
                         .approverName(lineDto.getUsrNm())
                         .approverPosition(lineDto.getPosNm())
                         .approverDepartment(lineDto.getDeptNm())
-                        .stepOrder(lineDto.getStepOrder())
-                        .status(i == 0 ? ApprovalStatus.WAITING : ApprovalStatus.WRITING) // 첫 사람만 대기, 나머진 순서대기
+                        .stepOrder(i + 1) // 작성자가 0번이므로 +1부터
+                        .status(i == 0 ? ApprovalStatus.WAITING : ApprovalStatus.WRITING)
                         .isFinalApprover(i == lineDtos.size() - 1)
-                        .isParallel(false) // 병렬은 지금 없음
+                        .isParallel(false)
                         .build();
 
-                approvalLineRepository.save(line);
+                approvalLines.add(line);
             }
         }
 
+        approvalLineRepository.saveAll(approvalLines);
+
         return savedDoc.getId();
     }
+
 
     //문서 내용 조회
     public Optional<ApprovalDocBody> getDocBody(Long docId) {
