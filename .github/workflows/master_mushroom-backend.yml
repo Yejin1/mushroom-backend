@@ -62,6 +62,6 @@ jobs:
         with:
           app-name: 'mushroom-backend'
           slot-name: 'Production'
-          package: 'build/libs/*SNAPSHOT.jar'
+          package: '*SNAPSHOT.jar'
 
           
