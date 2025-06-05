@@ -21,4 +21,8 @@ public interface ApprovalLineRepository extends JpaRepository<ApprovalLine, Long
 
     // 특정 문서에서 특정 결재자 조회
     Optional<ApprovalLine> findByApprovalDocAndApproverId(ApprovalDoc doc, Long approverId);
+
+    //문서 결재선 조회
+    List<ApprovalLine> findByApprovalDocId(Long docId);
+
 }

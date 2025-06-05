@@ -26,6 +26,8 @@ import java.time.LocalDateTime;
 @Builder
 public class ApprovalDocResponseDto {
     private Long id;
+    private Long lineId;
+    private Long userId;
     private String docNo;
     private Long formId;
     private String formNm;

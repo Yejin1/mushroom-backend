@@ -15,10 +15,7 @@ package dev.yejin1.mushroom_backend.approval.service;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.yejin1.mushroom_backend.approval.dto.ApprovalDocRequestDto;
-import dev.yejin1.mushroom_backend.approval.dto.ApprovalDocResponseDto;
-import dev.yejin1.mushroom_backend.approval.dto.ApprovalLineRequestDto;
-import dev.yejin1.mushroom_backend.approval.dto.ApprovalStatus;
+import dev.yejin1.mushroom_backend.approval.dto.*;
 import dev.yejin1.mushroom_backend.approval.entity.ApprovalDoc;
 import dev.yejin1.mushroom_backend.approval.entity.ApprovalDocBody;
 import dev.yejin1.mushroom_backend.approval.entity.ApprovalForm;
@@ -181,8 +178,36 @@ public class ApprovalService {
 
 
     //문서 내용 조회
-    public Optional<ApprovalDocBody> getDocBody(Long docId) {
-        return approvalDocBodyRepository.findById(docId);
+    public ApprovalDocDetailResponseDto getDocBodyWithLines(Long docId) {
+        ApprovalDocBody body = approvalDocBodyRepository.findById(docId)
+                .orElseThrow(() -> new RuntimeException("본문 없음"));
+
+        List<ApprovalLine> lines = approvalLineRepository.findByApprovalDocId(body.getDoc().getId());
+
+        List<ApprovalLineDto> lineDtos = lines.stream().map(l -> {
+            OrgUsr approver = orgUsrRepository.findById(l.getApproverId())
+                    .orElseThrow(() -> new RuntimeException("결재자 정보 없음"));
+
+            return ApprovalLineDto.builder()
+                    .approverId(l.getApproverId())
+                    .empNo(approver.getEmpNo())
+                    .approverName(l.getApproverName())
+                    .approverPosition(l.getApproverPosition())
+                    .approverDepartment(l.getApproverDepartment())
+                    .stepOrder(l.getStepOrder())
+                    .status(l.getStatus())
+                    .isFinalApprover(l.isFinalApprover())
+                    .comment(l.getComment())
+                    .approvedDt(l.getApprovedDt())
+                    .build();
+        }).toList();
+
+        return ApprovalDocDetailResponseDto.builder()
+                .body(body)
+                .approvalLines(lineDtos)
+                .build();
     }
+
+
 
 }

@@ -13,6 +13,7 @@
  */
 package dev.yejin1.mushroom_backend.approval.controller;
 
+import dev.yejin1.mushroom_backend.approval.dto.ApprovalDocDetailResponseDto;
 import dev.yejin1.mushroom_backend.approval.dto.ApprovalDocRequestDto;
 import dev.yejin1.mushroom_backend.approval.dto.ApprovalDocResponseDto;
 import dev.yejin1.mushroom_backend.approval.entity.ApprovalDoc;
@@ -76,8 +77,8 @@ public class ApprovalController {
 
     //문서 내용 조회
     @GetMapping("/read")
-    public Optional<ApprovalDocBody> getDocBody(@RequestParam Long docId) {
-        return approvalService.getDocBody(docId);
+    public ResponseEntity<ApprovalDocDetailResponseDto> getDocBodyWithLines(@RequestParam Long docId) {
+        return ResponseEntity.ok(approvalService.getDocBodyWithLines(docId));
     }
 
 

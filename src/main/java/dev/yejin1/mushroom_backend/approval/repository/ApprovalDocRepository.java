@@ -33,6 +33,8 @@ public interface ApprovalDocRepository  extends JpaRepository<ApprovalDoc, Long>
     @Query("""
             SELECT new dev.yejin1.mushroom_backend.approval.dto.ApprovalDocResponseDto(
             id,
+            null as lineId,
+            writer as userId,
             docNo,
             formId,
             formNm,
@@ -63,6 +65,8 @@ public interface ApprovalDocRepository  extends JpaRepository<ApprovalDoc, Long>
     @Query("""
     SELECT new dev.yejin1.mushroom_backend.approval.dto.ApprovalDocResponseDto(
         d.id,
+        l.id as lineId,
+        l.approverId as userId,
         d.docNo,
         d.formId,
         d.formNm,
@@ -86,8 +90,10 @@ public interface ApprovalDocRepository  extends JpaRepository<ApprovalDoc, Long>
 
     //2. 진행함 :결재라인에 내가 있으면서, 현재 미완인 문서
     @Query("""
-    SELECT new dev.yejin1.mushroom_backend.approval.dto.ApprovalDocResponseDto(
+    SELECT DISTINCT new dev.yejin1.mushroom_backend.approval.dto.ApprovalDocResponseDto(
         d.id,
+        l.id as lineId,
+        l.approverId as userId,
         d.docNo,
         d.formId,
         d.formNm,
@@ -104,7 +110,7 @@ public interface ApprovalDocRepository  extends JpaRepository<ApprovalDoc, Long>
     FROM ApprovalDoc d
     JOIN ApprovalLine l ON l.approvalDoc.id = d.id
     WHERE l.approverId = :usrId
-      AND d.statusCd <> 3
+      AND d.statusCd = 1
 """)
     Page<ApprovalDocResponseDto> findMyProcessingBox(@Param("usrId") Long usrId, Pageable pageable);
 
@@ -113,6 +119,8 @@ public interface ApprovalDocRepository  extends JpaRepository<ApprovalDoc, Long>
     @Query("""
     SELECT new dev.yejin1.mushroom_backend.approval.dto.ApprovalDocResponseDto(
         d.id,
+        l.id as lineId,
+        l.approverId as userId,
         d.docNo,
         d.formId,
         d.formNm,
@@ -130,7 +138,7 @@ public interface ApprovalDocRepository  extends JpaRepository<ApprovalDoc, Long>
     JOIN ApprovalLine l ON l.approvalDoc.id = d.id
     WHERE l.approverId = :usrId
       AND l.status = 'APPROVED'
-      AND d.statusCd = 3
+      AND d.statusCd = 2
 """)
     Page<ApprovalDocResponseDto> findMyCompletedBox(@Param("usrId") Long usrId, Pageable pageable);
 
@@ -138,6 +146,8 @@ public interface ApprovalDocRepository  extends JpaRepository<ApprovalDoc, Long>
     @Query("""
     SELECT new dev.yejin1.mushroom_backend.approval.dto.ApprovalDocResponseDto(
         d.id,
+        null as lineId,
+        d.writer as userId,
         d.docNo,
         d.formId,
         d.formNm,
@@ -153,7 +163,7 @@ public interface ApprovalDocRepository  extends JpaRepository<ApprovalDoc, Long>
     )
     FROM ApprovalDoc d
     WHERE d.writer = :usrId
-      AND d.statusCd IN (2, 4) 
+      AND d.statusCd IN (3, 4) 
 """)
     Page<ApprovalDocResponseDto> findMyRejectedBox(@Param("usrId") Long usrId, Pageable pageable);
 
@@ -162,6 +172,8 @@ public interface ApprovalDocRepository  extends JpaRepository<ApprovalDoc, Long>
     @Query("""
     SELECT new dev.yejin1.mushroom_backend.approval.dto.ApprovalDocResponseDto(
         d.id,
+        null as lineId,
+        r.refUsr.usrId as userId,
         d.docNo,
         d.formId,
         d.formNm,
@@ -185,6 +197,8 @@ public interface ApprovalDocRepository  extends JpaRepository<ApprovalDoc, Long>
     @Query("""
     SELECT new dev.yejin1.mushroom_backend.approval.dto.ApprovalDocResponseDto(
         d.id,
+        null as lineId,
+        null as userId,
         d.docNo,
         d.formId,
         d.formNm,
@@ -201,7 +215,7 @@ public interface ApprovalDocRepository  extends JpaRepository<ApprovalDoc, Long>
     FROM ApprovalDoc d
     JOIN OrgUsr u ON d.writer = u.usrId
     WHERE u.dept.deptId = :deptId
-      AND d.statusCd = 3
+      AND d.statusCd = 2
 """)
     Page<ApprovalDocResponseDto> findDeptCompletedBox(@Param("deptId") Long deptId, Pageable pageable);
 
@@ -209,6 +223,8 @@ public interface ApprovalDocRepository  extends JpaRepository<ApprovalDoc, Long>
     @Query("""
     SELECT new dev.yejin1.mushroom_backend.approval.dto.ApprovalDocResponseDto(
         d.id,
+        null as lineId,
+        null as userId,
         d.docNo,
         d.formId,
         d.formNm,
