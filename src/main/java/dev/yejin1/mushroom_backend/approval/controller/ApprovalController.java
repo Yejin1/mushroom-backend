@@ -16,6 +16,7 @@ package dev.yejin1.mushroom_backend.approval.controller;
 import dev.yejin1.mushroom_backend.approval.dto.ApprovalDocDetailResponseDto;
 import dev.yejin1.mushroom_backend.approval.dto.ApprovalDocRequestDto;
 import dev.yejin1.mushroom_backend.approval.dto.ApprovalDocResponseDto;
+import dev.yejin1.mushroom_backend.approval.dto.ApprovalReferenceRequestDto;
 import dev.yejin1.mushroom_backend.approval.entity.ApprovalDoc;
 import dev.yejin1.mushroom_backend.approval.entity.ApprovalDocBody;
 import dev.yejin1.mushroom_backend.approval.entity.ApprovalForm;
@@ -96,6 +97,15 @@ public class ApprovalController {
         Long id = approvalService.createApproval(dto);
         return ResponseEntity.ok(id);
     }
+
+
+    //참조
+    @PostMapping("/reference")
+    public ResponseEntity<Void> addReference(@RequestBody ApprovalReferenceRequestDto dto) {
+        approvalService.addReference(dto);
+        return ResponseEntity.ok().build();
+    }
+
 
 
 

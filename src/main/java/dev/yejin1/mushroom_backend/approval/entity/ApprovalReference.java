@@ -36,9 +36,12 @@ public class ApprovalReference {
     @JoinColumn(name = "ref_dept_id")
     private OrgDept refDept;
 
-    // 참조자 이름 또는 부서 이름 (프론트 표출용 캐싱)
     @Column(length = 50)
-    private String refName;
+    private String refDeptName;
+
+    // 참조자 이름 프론트 표출용 캐싱)
+    @Column(length = 50)
+    private String refUsrName;
 
     // USER 또는 DEPT
     @Column(name = "ref_type", nullable = false, length = 10)

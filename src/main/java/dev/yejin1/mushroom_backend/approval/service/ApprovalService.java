@@ -16,15 +16,11 @@ package dev.yejin1.mushroom_backend.approval.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.yejin1.mushroom_backend.approval.dto.*;
-import dev.yejin1.mushroom_backend.approval.entity.ApprovalDoc;
-import dev.yejin1.mushroom_backend.approval.entity.ApprovalDocBody;
-import dev.yejin1.mushroom_backend.approval.entity.ApprovalForm;
-import dev.yejin1.mushroom_backend.approval.entity.ApprovalLine;
-import dev.yejin1.mushroom_backend.approval.repository.ApprovalDocBodyRepository;
-import dev.yejin1.mushroom_backend.approval.repository.ApprovalDocRepository;
-import dev.yejin1.mushroom_backend.approval.repository.ApprovalFormRepository;
-import dev.yejin1.mushroom_backend.approval.repository.ApprovalLineRepository;
+import dev.yejin1.mushroom_backend.approval.entity.*;
+import dev.yejin1.mushroom_backend.approval.repository.*;
+import dev.yejin1.mushroom_backend.org.entity.OrgDept;
 import dev.yejin1.mushroom_backend.org.entity.OrgUsr;
+import dev.yejin1.mushroom_backend.org.repository.OrgDeptRepository;
 import dev.yejin1.mushroom_backend.org.repository.OrgUsrRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +44,8 @@ public class ApprovalService {
     private final OrgUsrRepository orgUsrRepository;
     private final ApprovalFormRepository approvalFormRepository;
     private final ApprovalLineRepository approvalLineRepository;
+    private final ApprovalReferenceRepository approvalReferenceRepository;
+    private final OrgDeptRepository orgDeptRepository;
 
     //문서 전체 목록 조회(미사용)
     public List<ApprovalDocResponseDto> getAllDocs() {
@@ -104,8 +102,8 @@ public class ApprovalService {
         doc.setTitle(dto.getTitle());
         doc.setWriter(dto.getWriter());
         doc.setUrgentYn(dto.getUrgentYn());
-        doc.setStatusCd(0);
-        doc.setStatusNm("작성중");
+        doc.setStatusCd(1);
+        doc.setStatusNm("상신됨");
         doc.setCreatedDt(LocalDateTime.now());
 
         OrgUsr writer = orgUsrRepository.findById(dto.getWriter())
@@ -207,6 +205,52 @@ public class ApprovalService {
                 .approvalLines(lineDtos)
                 .build();
     }
+
+
+    //참조
+    @Transactional
+    public void addReference(ApprovalReferenceRequestDto dto) {
+        ApprovalDoc doc = approvalDocRepository.findById(dto.getDocId())
+                .orElseThrow(() -> new RuntimeException("문서 없음"));
+
+        // 개인 참조자 등록
+        if (dto.getRefUsrIds() != null) {
+            for (Long usrId : dto.getRefUsrIds()) {
+                OrgUsr usr = orgUsrRepository.findById(usrId)
+                        .orElseThrow(() -> new RuntimeException("사용자 없음"));
+
+                ApprovalReference ref = ApprovalReference.builder()
+                        .approvalDoc(doc)
+                        .refUsr(usr)
+                        .refUsrName(usr.getUsrNm())
+                        .refType("USER")
+                        .createdBy("system")
+                        .build();
+
+                approvalReferenceRepository.save(ref);
+            }
+        }
+
+        // 부서 참조자 등록
+        if (dto.getRefDeptIds() != null) {
+            for (Long deptId : dto.getRefDeptIds()) {
+                OrgDept dept = orgDeptRepository.findById(deptId)
+                        .orElseThrow(() -> new RuntimeException("부서 없음"));
+
+                ApprovalReference ref = ApprovalReference.builder()
+                        .approvalDoc(doc)
+                        .refDept(dept)
+                        .refDeptName(dept.getDeptNm())
+                        .refType("DEPT")
+                        .createdBy("system")
+                        .build();
+
+                approvalReferenceRepository.save(ref);
+            }
+        }
+    }
+
+
 
 
 
