@@ -22,11 +22,13 @@ import dev.yejin1.mushroom_backend.org.entity.OrgDept;
 import dev.yejin1.mushroom_backend.org.entity.OrgUsr;
 import dev.yejin1.mushroom_backend.org.repository.OrgDeptRepository;
 import dev.yejin1.mushroom_backend.org.repository.OrgUsrRepository;
+import dev.yejin1.mushroom_backend.security.CustomUserPrincipal;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -213,6 +215,14 @@ public class ApprovalService {
         ApprovalDoc doc = approvalDocRepository.findById(dto.getDocId())
                 .orElseThrow(() -> new RuntimeException("문서 없음"));
 
+        //로그인 정보
+        CustomUserPrincipal principal = (CustomUserPrincipal)
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        //작성자
+        OrgUsr writer = orgUsrRepository.findById(principal.getUsrId())
+                .orElseThrow(() -> new RuntimeException("작성자 없음"));
+
         // 개인 참조자 등록
         if (dto.getRefUsrIds() != null) {
             for (Long usrId : dto.getRefUsrIds()) {
@@ -224,7 +234,7 @@ public class ApprovalService {
                         .refUsr(usr)
                         .refUsrName(usr.getUsrNm())
                         .refType("USER")
-                        .createdBy("system")
+                        .createdBy(writer.getUsrNm())
                         .build();
 
                 approvalReferenceRepository.save(ref);
@@ -242,7 +252,7 @@ public class ApprovalService {
                         .refDept(dept)
                         .refDeptName(dept.getDeptNm())
                         .refType("DEPT")
-                        .createdBy("system")
+                        .createdBy(writer.getUsrNm())
                         .build();
 
                 approvalReferenceRepository.save(ref);
@@ -251,6 +261,35 @@ public class ApprovalService {
     }
 
 
+
+    public ApprovalReferenceResponseDto getApprovalReference(Long docId) {
+        List<ApprovalReference> refs = approvalReferenceRepository.findByApprovalDocId(docId);
+
+        List<UserRefDto> userRefs = new ArrayList<>();
+        List<DeptRefDto> deptRefs = new ArrayList<>();
+
+        for (ApprovalReference ref : refs) {
+            if ("USER".equals(ref.getRefType()) && ref.getRefUsr() != null) {
+                userRefs.add(new UserRefDto(
+                        ref.getId(),
+                        ref.getRefUsr().getUsrId(),
+                        ref.getRefUsrName(),
+                        ref.getCreatedBy(),
+                        ref.getCreatedDt()
+                ));
+            } else if ("DEPT".equals(ref.getRefType()) && ref.getRefDept() != null) {
+                deptRefs.add(new DeptRefDto(
+                        ref.getId(),
+                        ref.getRefDept().getDeptId(),
+                        ref.getRefDeptName(),
+                        ref.getCreatedBy(),
+                        ref.getCreatedDt()
+                ));
+            }
+        }
+
+        return new ApprovalReferenceResponseDto(userRefs, deptRefs);
+    }
 
 
 

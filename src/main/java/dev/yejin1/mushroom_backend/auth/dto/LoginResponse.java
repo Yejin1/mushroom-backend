@@ -13,4 +13,5 @@ public class LoginResponse {
     private String loginId;
     private String usrNm;
     private String token;
+    private String empNo;
 }

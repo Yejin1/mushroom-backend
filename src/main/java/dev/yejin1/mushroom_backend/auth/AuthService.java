@@ -35,6 +35,7 @@ public class AuthService {
         return LoginResponse.builder()
                 .loginId(user.getLoginId())
                 .usrNm(user.getUsrNm())
+                .empNo(user.getEmpNo())
                 .token(token)
                 .build();
     }
