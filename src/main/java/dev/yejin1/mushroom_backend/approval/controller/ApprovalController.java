@@ -51,13 +51,17 @@ public class ApprovalController {
     @GetMapping("/list")
     public Page<ApprovalDocResponseDto> getDocList(
             @RequestParam String boxType, //결재함 종류
+            @RequestParam(required = false) String searchType, // 검색옵션 (title, formNm, writerNm, all)
+            @RequestParam(required = false) String keyword,     // 검색어
+            @RequestParam(required = false) String startDate,   // 시작일자 (yyyyMMdd)
+            @RequestParam(required = false) String endDate,     // 종료일자 (yyyyMMdd)
             @PageableDefault(size = 10, sort = "createdDt", direction = Sort.Direction.DESC) Pageable pageable) {
 
         CustomUserPrincipal principal = (CustomUserPrincipal)
                 SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Long usrId = principal.getUsrId();
 
-        return approvalService.getDocList(usrId, boxType, pageable);
+        return approvalService.getDocList(usrId, boxType, searchType, keyword, startDate, endDate, pageable);
     }
 
 

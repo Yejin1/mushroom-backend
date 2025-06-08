@@ -72,15 +72,23 @@ public class ApprovalService {
     }
 
     //문서 목록 조회
-    public Page<ApprovalDocResponseDto> getDocList(Long usrId, String boxType, Pageable pageable) {
+    public Page<ApprovalDocResponseDto> getDocList(
+            Long usrId,
+            String boxType,
+            String searchType,
+            String keyword,
+            String startDate,
+            String endDate,
+            Pageable pageable) {
+
         return switch (boxType) {
-            case "my-approval" -> approvalDocRepository.findMyApprovalBox(usrId, pageable);
-            case "my-in-progress" -> approvalDocRepository.findMyProcessingBox(usrId, pageable);
-            case "my-completed" -> approvalDocRepository.findMyCompletedBox(usrId, pageable);
-            case "my-rejected" -> approvalDocRepository.findMyRejectedBox(usrId, pageable);
-            case "my-referenced" -> approvalDocRepository.findMyReferenceBox(usrId, pageable);
-            case "dept-completed" -> approvalDocRepository.findDeptCompletedBox(usrId, pageable);
-            case "dept-referenced" -> approvalDocRepository.findDeptReferenceBox(usrId, pageable);
+            case "my-approval" -> approvalDocRepository.findMyApprovalBox(usrId, searchType, keyword, startDate, endDate, pageable);
+            case "my-in-progress" -> approvalDocRepository.findMyProcessingBox(usrId, searchType, keyword, startDate, endDate, pageable);
+            case "my-completed" -> approvalDocRepository.findMyCompletedBox(usrId, searchType, keyword, startDate, endDate, pageable);
+            case "my-rejected" -> approvalDocRepository.findMyRejectedBox(usrId, searchType, keyword, startDate, endDate, pageable);
+            case "my-referenced" -> approvalDocRepository.findMyReferenceBox(usrId, searchType, keyword, startDate, endDate, pageable);
+            case "dept-completed" -> approvalDocRepository.findDeptCompletedBox(usrId, searchType, keyword, startDate, endDate, pageable);
+            case "dept-referenced" -> approvalDocRepository.findDeptReferenceBox(usrId, searchType, keyword, startDate, endDate, pageable);
             default -> Page.empty();
         };
     }
