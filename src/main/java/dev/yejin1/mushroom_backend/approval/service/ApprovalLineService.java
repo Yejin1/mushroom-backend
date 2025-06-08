@@ -58,6 +58,7 @@ public class ApprovalLineService {
         if (!hasNext && line.isFinalApprover()) {
             doc.setStatusCd(2); // 예시: 2 = 승인완료
             doc.setStatusNm("결재완료");
+            doc.setCompletedDt(LocalDateTime.now());
         }
     }
 
