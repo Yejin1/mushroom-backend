@@ -1,5 +1,6 @@
 package dev.yejin1.mushroom_backend.org.controller;
 
+import dev.yejin1.mushroom_backend.org.dto.OrgModalDto;
 import dev.yejin1.mushroom_backend.org.dto.OrgUserSimpleDto;
 import dev.yejin1.mushroom_backend.org.service.OrgUsrService;
 import lombok.RequiredArgsConstructor;
@@ -22,4 +23,10 @@ public class OrgUsrController {
         List<OrgUserSimpleDto> users = orgUsrService.getAllUsers();
         return ResponseEntity.ok(users);
     }
+
+    @GetMapping("/org/modalList")
+    public List<OrgModalDto> getOrgList() {
+        return orgUsrService.getOrgModalList();
+    }
+
 }
