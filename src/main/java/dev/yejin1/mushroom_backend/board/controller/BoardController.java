@@ -63,6 +63,14 @@ public class BoardController {
         return boardService.getPostBody(postId);
     }
 
+    //게시글 조회 수 증가
+    @GetMapping("/viewCnt")
+    public ResponseEntity<Void> updateViewCnt(@RequestParam Long postId) {
+        boardService.updateViewCnt(postId);
+        return ResponseEntity.ok().build();
+
+    }
+
 
 
 

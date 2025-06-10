@@ -98,12 +98,21 @@ public class BoardService {
         return posts;
     }
 
+    //게시글 조회
     public BoardPostBodyResponse getPostBody(Long postId) {
         Optional<BoardPost> post = boardPostRepository.findById(postId);
         Optional<BoardPostBody> body = boardPostBodyRepository.findByBoardPost(post.get());
         BoardPostBodyResponse response = BoardPostBodyResponse.of(body.get());
         response.setTitle(post.get().getTitle());
         return response;
+    }
+
+    @Transactional
+    public void updateViewCnt(Long postId) {
+        Optional<BoardPost> post = boardPostRepository.findById(postId);
+        post.get().setViewCount(post.get().getViewCount()+1);
+
+        return;
     }
 
 
