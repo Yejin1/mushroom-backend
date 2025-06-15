@@ -14,22 +14,16 @@
 package dev.yejin1.mushroom_backend.approval.controller;
 
 import dev.yejin1.mushroom_backend.approval.dto.*;
-import dev.yejin1.mushroom_backend.approval.entity.ApprovalDoc;
-import dev.yejin1.mushroom_backend.approval.entity.ApprovalDocBody;
 import dev.yejin1.mushroom_backend.approval.entity.ApprovalForm;
 import dev.yejin1.mushroom_backend.approval.service.ApprovalService;
 import dev.yejin1.mushroom_backend.security.CustomUserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

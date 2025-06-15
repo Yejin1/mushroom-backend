@@ -13,11 +13,10 @@
  */
 package dev.yejin1.mushroom_backend.board.controller;
 
+import dev.yejin1.mushroom_backend.approval.dto.ApprovalDocRequestDto;
 import dev.yejin1.mushroom_backend.approval.dto.ApprovalDocResponseDto;
 import dev.yejin1.mushroom_backend.approval.entity.ApprovalDocBody;
-import dev.yejin1.mushroom_backend.board.dto.BoardMenuDto;
-import dev.yejin1.mushroom_backend.board.dto.BoardPostBodyResponse;
-import dev.yejin1.mushroom_backend.board.dto.BoardPostListResponse;
+import dev.yejin1.mushroom_backend.board.dto.*;
 import dev.yejin1.mushroom_backend.board.entity.BoardMenu;
 import dev.yejin1.mushroom_backend.board.entity.BoardPost;
 import dev.yejin1.mushroom_backend.board.entity.BoardPostBody;
@@ -51,9 +50,16 @@ public class BoardController {
         return ResponseEntity.ok(tree);
     }
 
+    @GetMapping("/writeMenuList") //글쓰기 게시판 선택용 목록
+    public ResponseEntity<List<BoardWriteMenuDto>> writeMenuList() {
+
+        List<BoardWriteMenuDto> tree = boardService.getBoardWriteMenu();
+        return ResponseEntity.ok(tree);
+    }
+
     @GetMapping("/list")
-    public Page<BoardPostListResponse> getPostList(@PageableDefault(size = 10, sort = "createdDt", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<BoardPostListResponse> posts = boardService.getPostList(pageable);
+    public Page<BoardPostListResponse> getPostList(@PageableDefault(size = 10, sort = "createdDt", direction = Sort.Direction.DESC) Pageable pageable, long menuId) {
+        Page<BoardPostListResponse> posts = boardService.getPostList(pageable, menuId);
         return posts;
     }
 
@@ -69,6 +75,21 @@ public class BoardController {
         boardService.updateViewCnt(postId);
         return ResponseEntity.ok().build();
 
+    }
+
+    //게시글 작성
+    @PostMapping("/write")
+    public ResponseEntity<Long> writePost(@RequestBody BoardPostRequestDto dto) {
+        //로그인 정보
+        CustomUserPrincipal principal = (CustomUserPrincipal)
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        //작성자 세팅
+        Long usrId = principal.getUsrId();
+        dto.setAuthorId(usrId);
+
+        Long id = boardService.writePost(dto);
+        return ResponseEntity.ok(id);
     }
 
 

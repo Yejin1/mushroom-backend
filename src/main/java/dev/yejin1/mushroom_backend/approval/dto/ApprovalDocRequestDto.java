@@ -28,5 +28,4 @@ public class ApprovalDocRequestDto {
     private Map<String, Object> formContent;
     private String editorContent;
     private List<ApprovalLineRequestDto> approvalLine;
-
 }
