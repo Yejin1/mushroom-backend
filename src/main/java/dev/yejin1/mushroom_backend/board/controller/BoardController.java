@@ -13,13 +13,7 @@
  */
 package dev.yejin1.mushroom_backend.board.controller;
 
-import dev.yejin1.mushroom_backend.approval.dto.ApprovalDocRequestDto;
-import dev.yejin1.mushroom_backend.approval.dto.ApprovalDocResponseDto;
-import dev.yejin1.mushroom_backend.approval.entity.ApprovalDocBody;
 import dev.yejin1.mushroom_backend.board.dto.*;
-import dev.yejin1.mushroom_backend.board.entity.BoardMenu;
-import dev.yejin1.mushroom_backend.board.entity.BoardPost;
-import dev.yejin1.mushroom_backend.board.entity.BoardPostBody;
 import dev.yejin1.mushroom_backend.board.repository.BoardMenuRepository;
 import dev.yejin1.mushroom_backend.board.service.BoardService;
 import dev.yejin1.mushroom_backend.security.CustomUserPrincipal;
@@ -33,7 +27,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
