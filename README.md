@@ -46,25 +46,6 @@ Spring Boot + React 기반의 전자결재 시스템으로,
 
 ![결재함](docs/list.png)
 
----
-
-## 📂 폴더 구조 예시
-
-```bash
-📦 mushroom-backend
- ┣ 📂 controller
- ┣ 📂 service
- ┣ 📂 entity
- ┣ 📂 dto
- ┗ ...
-
-📦 mushroom-frontend
- ┣ 📂 src
- ┃ ┣ 📂 pages
- ┃ ┣ 📂 components
- ┃ ┣ 📂 api
- ┃ ┗ ...
-```
 
 ---
 
