@@ -29,6 +29,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -150,6 +151,20 @@ public class BoardService {
 
         return savedPost.getId();
     }
+
+    @Transactional
+    public void deletePost(Long postId , Long currentUserId) throws AccessDeniedException {
+        BoardPost post = boardPostRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("게시글 없음"));
+
+        // 작성자 확인
+        if (!post.getAuthorId().equals(currentUserId)) {
+            throw new RuntimeException("본인이 작성한 게시글만 삭제할 수 있습니다.");
+        }
+
+        boardPostRepository.delete(post);
+    }
+
 
 
 }

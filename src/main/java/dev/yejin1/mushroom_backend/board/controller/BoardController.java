@@ -15,6 +15,7 @@ package dev.yejin1.mushroom_backend.board.controller;
 
 import dev.yejin1.mushroom_backend.board.dto.*;
 import dev.yejin1.mushroom_backend.board.repository.BoardMenuRepository;
+import dev.yejin1.mushroom_backend.board.repository.BoardPostRepository;
 import dev.yejin1.mushroom_backend.board.service.BoardService;
 import dev.yejin1.mushroom_backend.security.CustomUserPrincipal;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @RestController
@@ -34,6 +36,7 @@ import java.util.List;
 public class BoardController {
 
     private final BoardService boardService;
+    private final BoardPostRepository boardPostRepository;
     private final BoardMenuRepository boardMenuRepository;
 
     @GetMapping("/menuList") //메뉴 트리 조회
@@ -84,6 +87,23 @@ public class BoardController {
         Long id = boardService.writePost(dto);
         return ResponseEntity.ok(id);
     }
+
+    //게시글 삭제
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deletePost(@RequestParam Long postId) throws AccessDeniedException {
+        //로그인 정보
+        CustomUserPrincipal principal = (CustomUserPrincipal)
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        //사용자 정보 세팅
+        Long usrId = principal.getUsrId();
+
+        boardService.deletePost(postId, usrId);
+
+        return ResponseEntity.noContent().build();
+    }
+
+
 
 
 
