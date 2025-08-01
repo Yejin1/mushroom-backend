@@ -90,7 +90,7 @@ public class BoardController {
 
     //게시글 삭제
     @DeleteMapping("/delete")
-    public ResponseEntity<Void> deletePost(@RequestParam Long postId) throws AccessDeniedException {
+    public ResponseEntity<Void> deletePost(@RequestParam Long postId) {
         //로그인 정보
         CustomUserPrincipal principal = (CustomUserPrincipal)
                 SecurityContextHolder.getContext().getAuthentication().getPrincipal();

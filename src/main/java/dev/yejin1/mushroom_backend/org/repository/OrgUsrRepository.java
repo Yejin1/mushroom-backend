@@ -34,6 +34,7 @@ public interface OrgUsrRepository extends JpaRepository<OrgUsr, Long> {
                 FROM OrgUsr u
                 LEFT JOIN u.pos p
                 LEFT JOIN u.dept d
+                WHERE u.status = 'A'
             """)
     List<OrgUserSimpleDto> findAllSimpleUsers();
 

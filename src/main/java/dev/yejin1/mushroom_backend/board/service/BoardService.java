@@ -29,7 +29,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -153,7 +152,7 @@ public class BoardService {
     }
 
     @Transactional
-    public void deletePost(Long postId , Long currentUserId) throws AccessDeniedException {
+    public void deletePost(Long postId , Long currentUserId) {
         BoardPost post = boardPostRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("게시글 없음"));
 

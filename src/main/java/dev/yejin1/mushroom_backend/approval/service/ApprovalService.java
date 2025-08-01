@@ -22,6 +22,7 @@ import dev.yejin1.mushroom_backend.org.entity.OrgDept;
 import dev.yejin1.mushroom_backend.org.entity.OrgUsr;
 import dev.yejin1.mushroom_backend.org.repository.OrgDeptRepository;
 import dev.yejin1.mushroom_backend.org.repository.OrgUsrRepository;
+import dev.yejin1.mushroom_backend.sale.service.SaleService;
 import dev.yejin1.mushroom_backend.security.CustomUserPrincipal;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +49,7 @@ public class ApprovalService {
     private final ApprovalLineRepository approvalLineRepository;
     private final ApprovalReferenceRepository approvalReferenceRepository;
     private final OrgDeptRepository orgDeptRepository;
+    private final SaleService saleService;
 
     //문서 전체 목록 조회(미사용)
     public List<ApprovalDocResponseDto> getAllDocs() {
@@ -181,6 +183,14 @@ public class ApprovalService {
 
         approvalLineRepository.saveAll(approvalLines);
 
+        //판매 실적 등록 양식이면 redis 데이터 등록
+        /* kafka 이슈로 주석 처리
+        if (doc.getFormId() == 6L) {
+            saleService.handleSaleDoc(dto);
+        }
+        */
+        
+        
         return savedDoc.getId();
     }
 
