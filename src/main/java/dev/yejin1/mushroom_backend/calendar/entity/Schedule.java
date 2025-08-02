@@ -50,6 +50,16 @@ public class Schedule {
     )
     private List<OrgUsr> attendees;
 
+    //태그 연관관계
+    @ManyToMany
+    @JoinTable(
+            name = "schedule_tag_map",
+            schema = "mushroom",
+            joinColumns = @JoinColumn(name = "schedule_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private List<ScheduleTag> tags;
+
     // 생성일
     @Column(nullable = false)
     private LocalDateTime createdDt;
@@ -68,4 +78,5 @@ public class Schedule {
     protected void onUpdate() {
         this.updatedDt = LocalDateTime.now();
     }
+
 }

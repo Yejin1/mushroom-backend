@@ -3,6 +3,8 @@ import dev.yejin1.mushroom_backend.org.entity.OrgUsr;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "schedule_tag", schema = "mushroom")
 @Getter
@@ -16,14 +18,17 @@ public class ScheduleTag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "schedule_id", nullable = false)
-    private Schedule schedule;
+    @ManyToMany(mappedBy = "tags")
+    private List<Schedule> schedules;
 
     @Column(nullable = false, length = 50)
-    private String tag;
+    private String name;
 
     // 선택적으로 태그별 색상 저장 가능
     @Column(length = 20)
     private String color;
+
+    // 우선순위 (낮을수록 우선)
+    @Column(nullable = false)
+    private Integer priority;
 }
