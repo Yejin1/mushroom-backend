@@ -1,4 +1,5 @@
 package dev.yejin1.mushroom_backend.calendar.entity;
+import dev.yejin1.mushroom_backend.org.entity.OrgDept;
 import dev.yejin1.mushroom_backend.org.entity.OrgUsr;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,4 +32,17 @@ public class ScheduleTag {
     // 우선순위 (낮을수록 우선)
     @Column(nullable = false)
     private Integer priority;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private TagScopeType scopeType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usr_id")
+    private OrgUsr usr;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dept_id")
+    private OrgDept dept;
+
 }

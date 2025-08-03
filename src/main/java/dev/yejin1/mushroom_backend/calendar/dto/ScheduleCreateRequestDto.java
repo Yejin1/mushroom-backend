@@ -16,7 +16,6 @@ public class ScheduleCreateRequestDto {
     private String description;
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
-    private String category;
 
     private List<Long> tagIds;     // 태그 ID 리스트
     private List<Long> attendeeIds; // 참석자 ID 리스트

@@ -1,18 +1,17 @@
 package dev.yejin1.mushroom_backend.calendar.dto;
 
+import dev.yejin1.mushroom_backend.calendar.entity.TagScopeType;
 import lombok.*;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class TagDto {
-    private Long id;
+public class TagCreateRequestDto {
     private String name;
     private String color;
     private Integer priority;
-    private String scopeType;
-    private Long usrId;
+    private TagScopeType scopeType;
     private Long deptId;
 }

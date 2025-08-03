@@ -4,9 +4,11 @@ import dev.yejin1.mushroom_backend.calendar.dto.ScheduleCreateRequestDto;
 import dev.yejin1.mushroom_backend.calendar.dto.ScheduleDto;
 import dev.yejin1.mushroom_backend.calendar.dto.ScheduleUpdateRequestDto;
 import dev.yejin1.mushroom_backend.calendar.service.ScheduleService;
+import dev.yejin1.mushroom_backend.security.CustomUserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -24,15 +26,19 @@ public class ScheduleController {
             @RequestParam LocalDate startDate,
             @RequestParam LocalDate endDate
     ) {
+
         return scheduleService.getSchedulesBetween(startDate, endDate);
     }
 
     @PostMapping
     public ResponseEntity<ScheduleDto> createSchedule(
-            @RequestBody ScheduleCreateRequestDto request,
-            Authentication authentication) {
-
-        Long currentUserId = Long.valueOf(authentication.getName());
+            @RequestBody ScheduleCreateRequestDto request) {
+        System.out.println("실행되는지??");
+        //로그인 정보
+        CustomUserPrincipal principal = (CustomUserPrincipal)
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        //작성자 세팅
+        Long currentUserId = principal.getUsrId();
 
         ScheduleDto createdSchedule = scheduleService.createSchedule(request, currentUserId);
         return ResponseEntity.ok(createdSchedule);

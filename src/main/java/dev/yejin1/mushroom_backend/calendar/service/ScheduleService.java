@@ -6,17 +6,21 @@ import dev.yejin1.mushroom_backend.calendar.dto.ScheduleUpdateRequestDto;
 import dev.yejin1.mushroom_backend.calendar.dto.TagDto;
 import dev.yejin1.mushroom_backend.calendar.entity.Schedule;
 import dev.yejin1.mushroom_backend.calendar.entity.ScheduleTag;
+import dev.yejin1.mushroom_backend.calendar.entity.TagScopeType;
 import dev.yejin1.mushroom_backend.calendar.repository.ScheduleRepository;
 import dev.yejin1.mushroom_backend.calendar.repository.ScheduleTagRepository;
 import dev.yejin1.mushroom_backend.org.entity.OrgUsr;
 import dev.yejin1.mushroom_backend.org.repository.OrgUsrRepository;
+import dev.yejin1.mushroom_backend.security.CustomUserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
 
@@ -30,17 +34,31 @@ public class ScheduleService {
 
     @Transactional(readOnly = true)
     public List<ScheduleDto> getSchedulesBetween(LocalDate startDate, LocalDate endDate) {
+
+        //로그인 정보
+        CustomUserPrincipal principal = (CustomUserPrincipal)
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        //작성자 세팅
+        Long currentUserId = principal.getUsrId();
+        // 부서 정보
+        Long currentDeptId = orgUsrRepository.findById(currentUserId).get().getDept().getDeptId();
+
         LocalDateTime startDateTime = startDate.atStartOfDay();
         LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
 
-        List<Schedule> schedules = scheduleRepository
-                .findByStartDateTimeLessThanEqualAndEndDateTimeGreaterThanEqual(
-                        endDateTime, startDateTime);
+        System.out.println("startDateTime = " + startDateTime);
+        System.out.println("endDateTime = " + endDateTime);
+        System.out.println("currentDeptId = " + currentDeptId);
+
+        List<Schedule> schedules = scheduleRepository.findAccessibleSchedules(
+                startDateTime, endDateTime, currentUserId, currentDeptId
+        );
 
         return schedules.stream()
                 .map(this::toDto)
                 .toList();
     }
+
 
     @Transactional
     public ScheduleDto createSchedule(ScheduleCreateRequestDto dto, Long currentUserId) {
@@ -114,18 +132,41 @@ public class ScheduleService {
                 .findFirst()
                 .orElse("#3788d8"); // 기본 색상 (없을 경우)
 
+        boolean allDay = schedule.getStartDateTime().toLocalTime().equals(LocalTime.MIDNIGHT)
+                && schedule.getEndDateTime().toLocalTime().equals(LocalTime.of(23, 59, 59));
+
         return ScheduleDto.builder()
                 .id(schedule.getId())
                 .title(schedule.getTitle())
                 .start(schedule.getStartDateTime())
                 .end(schedule.getEndDateTime())
                 .color(representativeColor)
+                .allDay(allDay)
                 .tags(
                         schedule.getTags().stream()
-                                .map(tag -> new TagDto(tag.getId(), tag.getName(), tag.getColor(), tag.getPriority()))
+                                .map(tag -> new TagDto(
+                                        tag.getId(),
+                                        tag.getName(),
+                                        tag.getColor(),
+                                        tag.getPriority(),
+                                        tag.getScopeType().toString(),
+                                        tag.getUsr() != null ? tag.getUsr().getUsrId() : null,
+                                        tag.getDept() != null ? tag.getDept().getDeptId() : null
+                                ))
                                 .toList()
                 )
                 .build();
     }
+
+    public List<ScheduleTag> getAvailableTags(Long currentUserId, Long currentDeptId) {
+        return scheduleTagRepository.findAll().stream()
+                .filter(tag ->
+                        tag.getScopeType() == TagScopeType.COMPANY ||
+                                (tag.getScopeType() == TagScopeType.DEPARTMENT && tag.getDept().getDeptId().equals(currentDeptId)) ||
+                                (tag.getScopeType() == TagScopeType.PERSONAL && tag.getUsr().getUsrId().equals(currentUserId))
+                )
+                .toList();
+    }
+
 
 }

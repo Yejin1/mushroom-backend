@@ -17,4 +17,5 @@ public class ScheduleDto {
     private LocalDateTime end;
     private String color;
     private List<TagDto> tags;
+    private Boolean allDay;
 }
