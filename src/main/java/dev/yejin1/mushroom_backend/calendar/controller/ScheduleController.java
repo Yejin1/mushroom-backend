@@ -26,7 +26,6 @@ public class ScheduleController {
             @RequestParam LocalDate startDate,
             @RequestParam LocalDate endDate
     ) {
-
         return scheduleService.getSchedulesBetween(startDate, endDate);
     }
 

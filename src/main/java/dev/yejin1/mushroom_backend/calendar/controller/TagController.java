@@ -27,6 +27,7 @@ public class TagController {
     public ResponseEntity<TagDto> createTag(
             @RequestBody TagCreateRequestDto request) {
 
+
         //로그인 정보
         CustomUserPrincipal principal = (CustomUserPrincipal)
                 SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -53,5 +54,14 @@ public class TagController {
 
         List<TagDto> tags = tagService.getAvailableTags(currentUserId, currentDeptId);
         return ResponseEntity.ok(tags);
+    }
+
+    //태그 삭제
+    @DeleteMapping
+    public ResponseEntity<Void> deleteTag(@RequestParam Long id) {
+
+        tagService.deleteTag(id);
+
+        return ResponseEntity.noContent().build();
     }
 }

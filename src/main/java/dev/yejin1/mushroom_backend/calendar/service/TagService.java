@@ -2,6 +2,7 @@ package dev.yejin1.mushroom_backend.calendar.service;
 
 import dev.yejin1.mushroom_backend.calendar.dto.TagCreateRequestDto;
 import dev.yejin1.mushroom_backend.calendar.dto.TagDto;
+import dev.yejin1.mushroom_backend.calendar.entity.Schedule;
 import dev.yejin1.mushroom_backend.calendar.entity.ScheduleTag;
 import dev.yejin1.mushroom_backend.calendar.entity.TagScopeType;
 import dev.yejin1.mushroom_backend.calendar.repository.ScheduleTagRepository;
@@ -28,6 +29,13 @@ public class TagService {
         OrgUsr creator = orgUsrRepository.findById(currentUserId)
                 .orElseThrow(() -> new RuntimeException("사용자 없음"));
 
+        if (dto.getPriority() == null) {
+            Integer maxPriority = scheduleTagRepository.findMaxPriority().orElse(0);
+            dto.setPriority(maxPriority + 1);
+        }
+
+        long deptId = creator.getDept().getDeptId();
+
         ScheduleTag tag = new ScheduleTag();
         tag.setName(dto.getName());
         tag.setColor(dto.getColor());
@@ -38,7 +46,7 @@ public class TagService {
             tag.setUsr(creator);
             tag.setDept(null);
         } else if (dto.getScopeType() == TagScopeType.DEPARTMENT) {
-            OrgDept dept = orgDeptRepository.findById(dto.getDeptId())
+            OrgDept dept = orgDeptRepository.findById(deptId)
                     .orElseThrow(() -> new RuntimeException("부서 없음"));
             tag.setDept(dept);
             tag.setUsr(null);
@@ -77,5 +85,13 @@ public class TagService {
                 .usrId(tag.getUsr() != null ? tag.getUsr().getUsrId() : null)
                 .deptId(tag.getDept() != null ? tag.getDept().getDeptId() : null)
                 .build();
+    }
+
+    @Transactional
+    public void deleteTag(Long id) {
+        ScheduleTag tag = scheduleTagRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("태그 정보를 찾을 수 없음"));
+
+        scheduleTagRepository.delete(tag);
     }
 }

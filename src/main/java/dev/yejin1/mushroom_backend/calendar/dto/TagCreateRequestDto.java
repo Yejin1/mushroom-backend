@@ -13,5 +13,4 @@ public class TagCreateRequestDto {
     private String color;
     private Integer priority;
     private TagScopeType scopeType;
-    private Long deptId;
 }
