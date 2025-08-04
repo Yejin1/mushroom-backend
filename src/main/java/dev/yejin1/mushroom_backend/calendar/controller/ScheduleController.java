@@ -33,7 +33,7 @@ public class ScheduleController {
     @PostMapping
     public ResponseEntity<ScheduleDto> createSchedule(
             @RequestBody ScheduleCreateRequestDto request) {
-        System.out.println("실행되는지??");
+
         //로그인 정보
         CustomUserPrincipal principal = (CustomUserPrincipal)
                 SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -46,13 +46,26 @@ public class ScheduleController {
 
     @PutMapping
     public ResponseEntity<ScheduleDto> updateSchedule(
-            @PathVariable Long id,
-            @RequestBody ScheduleUpdateRequestDto request,
-            Authentication authentication) {
+            @RequestBody ScheduleUpdateRequestDto request) {
 
-        Long currentUserId = Long.valueOf(authentication.getName());
+        //로그인 정보
+        CustomUserPrincipal principal = (CustomUserPrincipal)
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        //작성자 세팅
+        Long currentUserId = principal.getUsrId();
+
+        Long id = request.getId();
 
         ScheduleDto updatedSchedule = scheduleService.updateSchedule(id, request, currentUserId);
         return ResponseEntity.ok(updatedSchedule);
+    }
+
+    //일정 삭제
+    @DeleteMapping
+    public ResponseEntity<Void> deletePost(@RequestParam Long id) {
+
+        scheduleService.deleteSchedule(id);
+
+        return ResponseEntity.noContent().build();
     }
 }

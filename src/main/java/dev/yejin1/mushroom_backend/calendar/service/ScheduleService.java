@@ -1,5 +1,6 @@
 package dev.yejin1.mushroom_backend.calendar.service;
 
+import dev.yejin1.mushroom_backend.board.entity.BoardPost;
 import dev.yejin1.mushroom_backend.calendar.dto.ScheduleCreateRequestDto;
 import dev.yejin1.mushroom_backend.calendar.dto.ScheduleDto;
 import dev.yejin1.mushroom_backend.calendar.dto.ScheduleUpdateRequestDto;
@@ -96,10 +97,6 @@ public class ScheduleService {
         Schedule schedule = scheduleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("일정을 찾을 수 없습니다."));
 
-        // 작성자 확인 (본인만 수정 가능)
-        if (!schedule.getCreatedBy().getUsrId().equals(currentUserId)) {
-            throw new AccessDeniedException("본인이 작성한 일정만 수정할 수 있습니다.");
-        }
 
         // 필드 업데이트
         if (dto.getTitle() != null) schedule.setTitle(dto.getTitle());
@@ -142,6 +139,7 @@ public class ScheduleService {
                 .end(schedule.getEndDateTime())
                 .color(representativeColor)
                 .allDay(allDay)
+                .description(schedule.getDescription())
                 .tags(
                         schedule.getTags().stream()
                                 .map(tag -> new TagDto(
@@ -166,6 +164,16 @@ public class ScheduleService {
                                 (tag.getScopeType() == TagScopeType.PERSONAL && tag.getUsr().getUsrId().equals(currentUserId))
                 )
                 .toList();
+    }
+
+    @Transactional
+    public void deleteSchedule(Long id) {
+        Schedule schedule = scheduleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("일정을 찾을 수 없음"));
+
+        schedule.getTags().clear();
+        schedule.getAttendees().clear();
+        scheduleRepository.delete(schedule);
     }
 
 
