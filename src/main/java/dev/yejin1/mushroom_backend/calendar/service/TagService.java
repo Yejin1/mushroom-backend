@@ -92,6 +92,11 @@ public class TagService {
         ScheduleTag tag = scheduleTagRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("태그 정보를 찾을 수 없음"));
 
+        // 매핑된 스케줄에서 해당 태그 제거
+        for (Schedule schedule : tag.getSchedules()) {
+            schedule.getTags().remove(tag);
+        }
+
         scheduleTagRepository.delete(tag);
     }
 }
