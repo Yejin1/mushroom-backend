@@ -1,6 +1,5 @@
 package dev.yejin1.mushroom_backend.approval.service;
 
-
 import dev.yejin1.mushroom_backend.approval.dto.ApprovalStatus;
 import dev.yejin1.mushroom_backend.approval.entity.ApprovalDoc;
 import dev.yejin1.mushroom_backend.approval.entity.ApprovalLine;
@@ -25,7 +24,7 @@ public class ApprovalLineService {
 
     @Transactional
     public void approve(Long lineId, Long currentUserId) {
-        ApprovalLine line = approvalLineRepository.findById(lineId)
+        ApprovalLine line = approvalLineRepository.findWithLockById(lineId)
                 .orElseThrow(() -> new RuntimeException("결재선 정보 없음"));
 
         // 1. 결재자 본인 확인
@@ -66,7 +65,7 @@ public class ApprovalLineService {
 
         // 결재 알림용 이벤트 발행
         var event = new ApprovalCompletedEvent(
-                doc.getId(), doc.getTitle(), "approver-"+currentUserId,
+                doc.getId(), doc.getTitle(), "approver-" + currentUserId,
                 "/docs/" + doc.getId(),
                 "approve:" + doc.getId() // 멱등키(문서당 1회)
         );
@@ -75,7 +74,7 @@ public class ApprovalLineService {
 
     @Transactional
     public void rejectApproval(Long lineId, Long currentUsrId, String comment) {
-        ApprovalLine line = approvalLineRepository.findById(lineId)
+        ApprovalLine line = approvalLineRepository.findWithLockById(lineId)
                 .orElseThrow(() -> new RuntimeException("결재선 없음"));
 
         if (!line.getStatus().equals(ApprovalStatus.WAITING)) {
@@ -102,7 +101,7 @@ public class ApprovalLineService {
 
     @Transactional
     public void withdrawApproval(Long docId, Long currentUsrId) {
-        ApprovalDoc doc = approvalDocRepository.findById(docId)
+        ApprovalDoc doc = approvalDocRepository.findWithLockById(docId)
                 .orElseThrow(() -> new RuntimeException("문서 없음"));
 
         if (!doc.getWriter().equals(currentUsrId)) {
@@ -117,9 +116,5 @@ public class ApprovalLineService {
         doc.setStatusNm("회수됨");
         approvalDocRepository.save(doc);
     }
-
-
-
-
 
 }

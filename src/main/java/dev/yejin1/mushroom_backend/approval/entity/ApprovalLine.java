@@ -54,7 +54,7 @@ public class ApprovalLine {
     private boolean isParallel = false;
 
     @Column(length = 500)
-    private String comment;  // 결재 의견
+    private String comment; // 결재 의견
 
     private LocalDateTime approvedDt; // 실제 승인 시각
 
@@ -63,4 +63,8 @@ public class ApprovalLine {
 
     @UpdateTimestamp
     private LocalDateTime statusUpdatedDt;
+
+    @Version
+    @Column(name = "VERSION")
+    private Long version;
 }
