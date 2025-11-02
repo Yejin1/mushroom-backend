@@ -59,6 +59,10 @@ public class ApprovalDoc {
     @Column(name = "STATUS_NM", nullable = false, length = 20)
     private String statusNm;
 
+    @Version
+    @Column(name = "VERSION")
+    private Long version;
+
     @Column(name = "CURRENT_USR")
     private Long currentUsr;
 

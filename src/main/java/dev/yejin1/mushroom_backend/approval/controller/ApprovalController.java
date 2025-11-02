@@ -37,11 +37,6 @@ public class ApprovalController {
     private final ApprovalService approvalService;
 
 
-    @GetMapping //문서목록 전체 조회(미사용)
-    ResponseEntity<List<ApprovalDocResponseDto>> getAllDocs() {
-        return ResponseEntity.ok(approvalService.getAllDocs());
-    }
-
     @GetMapping("/list")
     public Page<ApprovalDocResponseDto> getDocList(
             @RequestParam String boxType, //결재함 종류

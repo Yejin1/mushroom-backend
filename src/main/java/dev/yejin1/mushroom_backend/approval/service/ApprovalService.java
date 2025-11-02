@@ -51,28 +51,6 @@ public class ApprovalService {
     private final OrgDeptRepository orgDeptRepository;
     private final SaleService saleService;
 
-    //문서 전체 목록 조회(미사용)
-    public List<ApprovalDocResponseDto> getAllDocs() {
-        return 
-                approvalDocRepository.findAll().stream()
-                .map(doc -> ApprovalDocResponseDto.builder()
-                        .id(doc.getId())
-                        .docNo(doc.getDocNo())
-                        .formId(doc.getFormId())
-                        .formNm(doc.getFormNm())
-                        .title(doc.getTitle())
-                        .writer(doc.getWriter())
-                        .writerNm(doc.getWriterNm())
-                        .statusCd(doc.getStatusCd())
-                        .statusNm(doc.getStatusNm())
-                        .currentUsr(doc.getCurrentUsr())
-                        .createdDt(doc.getCreatedDt())
-                        .completedDt(doc.getCompletedDt())
-                        .urgentYn(doc.getUrgentYn())
-                        .build())
-                .collect(Collectors.toList());
-    }
-
     //문서 목록 조회
     public Page<ApprovalDocResponseDto> getDocList(
             Long usrId,

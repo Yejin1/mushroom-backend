@@ -4,10 +4,12 @@ package dev.yejin1.mushroom_backend.approval.service;
 import dev.yejin1.mushroom_backend.approval.dto.ApprovalStatus;
 import dev.yejin1.mushroom_backend.approval.entity.ApprovalDoc;
 import dev.yejin1.mushroom_backend.approval.entity.ApprovalLine;
+import dev.yejin1.mushroom_backend.approval.event.ApprovalCompletedEvent;
 import dev.yejin1.mushroom_backend.approval.repository.ApprovalDocRepository;
 import dev.yejin1.mushroom_backend.approval.repository.ApprovalLineRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,6 +21,7 @@ public class ApprovalLineService {
 
     private final ApprovalLineRepository approvalLineRepository;
     private final ApprovalDocRepository approvalDocRepository;
+    private final ApplicationEventPublisher publisher;
 
     @Transactional
     public void approve(Long lineId, Long currentUserId) {
@@ -60,6 +63,14 @@ public class ApprovalLineService {
             doc.setStatusNm("결재완료");
             doc.setCompletedDt(LocalDateTime.now());
         }
+
+        // 결재 알림용 이벤트 발행
+        var event = new ApprovalCompletedEvent(
+                doc.getId(), doc.getTitle(), "approver-"+currentUserId,
+                "/docs/" + doc.getId(),
+                "approve:" + doc.getId() // 멱등키(문서당 1회)
+        );
+        publisher.publishEvent(event);
     }
 
     @Transactional
