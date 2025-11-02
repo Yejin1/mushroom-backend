@@ -6,6 +6,9 @@ import dev.yejin1.mushroom_backend.approval.entity.ApprovalLine;
 import dev.yejin1.mushroom_backend.approval.event.ApprovalCompletedEvent;
 import dev.yejin1.mushroom_backend.approval.repository.ApprovalDocRepository;
 import dev.yejin1.mushroom_backend.approval.repository.ApprovalLineRepository;
+import dev.yejin1.mushroom_backend.approval.service.handler.FinalApprovalHandler;
+import dev.yejin1.mushroom_backend.approval.service.handler.impl.DefaultFinalApprovalHandler;
+import dev.yejin1.mushroom_backend.approval.service.handler.model.ApprovalContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -13,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -22,8 +27,12 @@ public class ApprovalLineService {
     private final ApprovalDocRepository approvalDocRepository;
     private final ApplicationEventPublisher publisher;
 
+    // 전략 주입 및 레지스트리 구성 (빈 이름을 키로 활용)
+    private final Map<String, FinalApprovalHandler> handlerMap;
+    private final DefaultFinalApprovalHandler defaultFinalApprovalHandler;
+
     @Transactional
-    public void approve(Long lineId, Long currentUserId) {
+    public void approve(Long lineId, Long currentUserId, String formCode) {
         ApprovalLine line = approvalLineRepository.findWithLockById(lineId)
                 .orElseThrow(() -> new RuntimeException("결재선 정보 없음"));
 
@@ -56,18 +65,25 @@ public class ApprovalLineService {
             }
         }
 
-        // 5. 마지막 결재자였다면 문서 상태 변경
+        // 5. 마지막 결재자였다면 문서 상태 변경 (전략패턴으로 양식마다 다르게 수행)
         if (!hasNext && line.isFinalApprover()) {
-            doc.setStatusCd(2); // 예시: 2 = 승인완료
-            doc.setStatusNm("결재완료");
-            doc.setCompletedDt(LocalDateTime.now());
+            ApprovalContext ctx = ApprovalContext.builder()
+                    .formCode(formCode)
+                    .doc(doc)
+                    .line(line)
+                    .now(LocalDateTime.now())
+                    .build();
+
+            String key = formCode == null ? "DEFAULT" : formCode.toUpperCase(Locale.ROOT);
+            FinalApprovalHandler handler = handlerMap.getOrDefault(key, defaultFinalApprovalHandler);
+            handler.handle(ctx);
         }
 
         // 결재 알림용 이벤트 발행
         var event = new ApprovalCompletedEvent(
                 doc.getId(), doc.getTitle(), "approver-" + currentUserId,
                 "/docs/" + doc.getId(),
-                "approve:" + doc.getId() // 멱등키(문서당 1회)
+                "approve:" + doc.getId()
         );
         publisher.publishEvent(event);
     }
