@@ -32,6 +32,10 @@ public class ApprovalDoc {
     @Column(name = "DOC_NO", length = 50, unique = true)
     private String docNo;
 
+    // 아이템포턴시 키(동일 요청 중복 상신 방지용)
+    @Column(name = "IDEMPOTENCY_KEY", length = 100, unique = true)
+    private String idempotencyKey;
+
     @Column(name = "FORM_ID")
     private Long formId;
 

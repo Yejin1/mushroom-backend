@@ -92,6 +92,7 @@ public class ApprovalService {
         doc.setTitle(dto.getTitle());
         doc.setWriter(dto.getWriter());
         doc.setUrgentYn(dto.getUrgentYn());
+        doc.setIdempotencyKey(dto.getIdempotencyKey());
         doc.setStatusCd(1);
         doc.setStatusNm("상신됨");
         doc.setCreatedDt(LocalDateTime.now());
