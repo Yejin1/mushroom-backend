@@ -28,7 +28,7 @@ public class OutboxDispatcher {
     @Value("${outbox.dispatch.batchSize:20}")
     private int batchSize;
 
-    @Scheduled(fixedDelayString = "${outbox.dispatch.fixedDelayMs:2000}")
+    @Scheduled(fixedDelayString = "${outbox.dispatch.fixedDelayMs:30000}")
     @Transactional
     public void dispatch() {
         List<OutboxEvent> batch = outboxRepository.pickPendingForDispatch(Instant.now(), PageRequest.of(0, batchSize));
